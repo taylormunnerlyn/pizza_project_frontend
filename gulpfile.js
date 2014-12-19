@@ -1,0 +1,427 @@
+(function (require, process) {
+    'use strict';
+
+    var gulp = require('gulp'),
+        globs = require('globs'),
+        historyApiFallback = require('connect-history-api-fallback'),
+        rimraf = require('gulp-rimraf'),
+        jshint = require('gulp-jshint'),
+        concat = require('gulp-concat'),
+        uglify = require('gulp-uglify'),
+        rename = require('gulp-rename'),
+        less = require('gulp-less'),
+        minifyCSS = require('gulp-minify-css'),
+        templateCache = require('gulp-angular-templatecache'),
+        template = require('gulp-template'),
+        runSequence = require('run-sequence'),
+        csslint = require('gulp-csslint'),
+        connect = require('gulp-connect'),
+        livereload = require('gulp-livereload'),
+        ngConstant = require('gulp-ng-constant'),
+        gulpif = require('gulp-if'),
+        changed = require('gulp-changed'),
+        ngAnnotate = require('gulp-ng-annotate'),
+        notify = require('gulp-notify'),
+        minifyHTML = require('gulp-minify-html'),
+        sourcemaps = require('gulp-sourcemaps'),
+        chalk = require('chalk'),
+        table = require('text-table'),
+        logSymbols = require('log-symbols'),
+        stringLength = require('string-length'),
+        traceur = require('gulp-traceur'),
+        karma = require('karma').server,
+        config = require('./config.js'),
+        env = process.env.NODE_ENV || 'dev';
+
+    /**
+     * Start the development server on port 9000. Runs from the `bin/` folder if
+     * it exists.
+     */
+    gulp.task('connect', function () {
+        connect.server({
+            root: ['bin', 'build'],
+            port: 9000,
+
+            middleware: function () {
+                return [historyApiFallback];
+            }
+        });
+    });
+
+    /**
+     * Runs the tests for the app once.
+     */
+    gulp.task('test', function (done) {
+        karma.start({
+            configFile: __dirname + '/karma/karma.conf.js',
+            singleRun: true
+        }, done);
+    });
+
+    /**
+     * Continuously run the tests when changes occur.
+     */
+    gulp.task('tdd', function (done) {
+        karma.start({
+            configFile: __dirname + '/karma/karma.conf.js'
+        }, done);
+    });
+
+    /**
+     * Cleans the build and compile directories.
+     */
+    gulp.task('clean', function () {
+        return gulp.src([config.buildDir, config.compileDir], {read: false})
+            .pipe(rimraf());
+    });
+
+    /**
+     * Lints all of the app .js files and moves them to the build directory.
+     *
+     * Runs ngAnnotate if NODE_ENV is set to production.
+     */
+    gulp.task('buildScripts', function () {
+        return gulp.src(config.appFiles.js)
+            .pipe(changed(config.buildDir))
+            .pipe(jshint({
+                debug: true
+            }))
+            .pipe(jshint.reporter('jshint-stylish'))
+            .pipe(notify(function (file) {
+                if (file.jshint.success) {
+                    return false;
+                }
+
+                return file.relative + ' line ' +
+                    file.jshint.results[0].error.line + '\n';
+            }))
+            .pipe(gulpif(env === 'production', ngAnnotate()))
+            .pipe(sourcemaps.init())
+            .pipe(traceur({
+                modules: 'instantiate',
+                script: false,
+                sourceMaps: true,
+                moduleName: true
+            }))
+            .pipe(concat('app.js'))
+            .pipe(sourcemaps.write('./maps'))
+            .pipe(gulp.dest(config.buildDir));
+    });
+
+    /**
+     * Lints all of the less files compiles them into CSS and moves them
+     * into the build directory.
+     *
+     * * NOTE: Works best if you only have one .less file and everything else
+     *         is imported from it.
+     */
+    gulp.task('buildStyles', function () {
+        var customCssReporter = function (file) {
+            var errCount = 0,
+                warnCount = 0,
+                msgTable,
+                countTable = [];
+
+            var pluralize = function (str, count) {
+                return str + (count === 1 ? '' : 's');
+            };
+
+            if (file.csslint.success) {
+                return false;
+            }
+
+            // Log out the file path.
+            console.log(
+                '\n' +
+                chalk.underline(file.path)
+            );
+
+            // Format each error message.
+            msgTable = table(file.csslint.results.map(function (res) {
+                var row = [''],
+                    isError = res.error.type === 'error';
+
+                if (isError) {
+                    errCount++;
+
+                    res.error.message = chalk.red(res.error.message);
+                } else {
+                    warnCount++;
+
+                    res.error.message = chalk.yellow(res.error.message);
+                }
+
+                if (res.error.line && res.error.col) {
+                    row.push(chalk.gray('line ' + res.error.line));
+                    row.push(chalk.gray('col ' + res.error.col));
+                    row.push(res.error.message);
+                } else {
+                    row.push('');
+                    row.push('');
+                    row.push(res.error.message);
+                }
+
+                if (file.csslint.options.verbose) {
+                    row[row.length - 1] += ' (' + res.error.rule.id + ')';
+                }
+
+                return row;
+            }), {
+                stringLength: stringLength
+            });
+
+            // Format the warning and error count tables.
+            if (errCount > 0) {
+                countTable.push([
+                    '',
+                    logSymbols.error,
+                    errCount + pluralize(' error', errCount)
+                ]);
+            }
+
+            if (warnCount > 0) {
+                countTable.push([
+                    '',
+                    logSymbols.warning,
+                    warnCount + pluralize(' warning', warnCount)
+                ]);
+            }
+
+            // Log out the error message and count tables.
+            console.log(msgTable);
+            console.log('\n' + table(countTable));
+        };
+
+        return gulp.src(config.appFiles.less)
+            .pipe(changed(config.buildDir))
+            .pipe(sourcemaps.init())
+            .pipe(less())
+            .pipe(csslint('.csslintrc'))
+            .pipe(csslint.reporter(customCssReporter))
+            .pipe(notify(function (file) {
+                if (file.csslint.success) {
+                    return false;
+                }
+
+                return (
+                    file.csslint.errorCount + ' error' +
+                    (file.csslint.errorCount > 1 ? 's' : '') +
+                    ' occurred during CSS linting.'
+                );
+            }))
+            .pipe(sourcemaps.write('./maps'))
+            .pipe(gulp.dest(config.buildDir));
+    });
+
+    /**
+     * Compiles all of the app HTML template files into a single JS file and
+     * moves it into the build directory.
+     */
+    gulp.task('buildHtml', function () {
+        return gulp.src(config.appFiles.tpl)
+            .pipe(template({
+                env: env
+            }))
+            .pipe(gulpif(env === 'production', minifyHTML({empty: true})))
+            .pipe(templateCache('templates.js', {
+                module: 'htmlTemplates',
+                standalone: true
+            }))
+            .pipe(gulp.dest(config.buildDir));
+    });
+
+    /**
+     * Moves all of the app files into the build directory.
+     */
+    gulp.task('buildAssets', function () {
+        return gulp.src(config.appFiles.assets)
+            .pipe(gulp.dest(config.buildDir + '/assets'));
+    });
+
+    /**
+     * Moves all of the vendor scripts into the build directory maintaining
+     * directory structure.
+     */
+    gulp.task('buildVendorScripts', function () {
+        console.log(traceur.RUNTIME_PATH);
+        config.vendorFiles.js.unshift(traceur.RUNTIME_PATH);
+
+        if (config.vendorFiles.js.length !== 0) {
+            return gulp.src(config.vendorFiles.js, {base: './'})
+                .pipe(gulp.dest(config.buildDir));
+        }
+    });
+
+    /**
+     * Moves all of the vendor CSS files into the build directory maintaining
+     * directory structure.
+     */
+    gulp.task('buildVendorCss', function () {
+        if (config.vendorFiles.css.length !== 0) {
+            return gulp.src(config.vendorFiles.css, {base: './'})
+                .pipe(gulp.dest(config.buildDir));
+        }
+    });
+
+    /**
+     * Moves all of the vendor assets into the build directory maintaining
+     * directory structure.
+     */
+    gulp.task('buildVendorAssets', function () {
+        if (config.vendorFiles.assets.length !== 0) {
+            return gulp.src(config.vendorFiles.assets, {base: './'})
+                .pipe(gulp.dest(config.buildDir));
+        }
+    });
+
+    /**
+     * Grab all of the scripts and concatenate them into one file, also minify
+     * that file into another file.
+     */
+    gulp.task('compileScripts', function () {
+        var files = config.vendorFiles.js;
+
+        files = files.concat([
+            'app.js',
+            'templates.js',
+            'config.js'
+        ]);
+
+        return gulp.src(files, {cwd: './' + config.buildDir}, {nosort: true})
+            .pipe(concat('app.min.js'))
+            .pipe(uglify())
+            .pipe(gulp.dest(config.compileDir));
+    });
+
+    /**
+     * Moves the main.css file to the compile directory. Also minifies the css
+     * into main.min.css.
+     */
+    gulp.task('compileStyles', function () {
+        return gulp.src('*.css', {cwd: './' + config.buildDir})
+            .pipe(rename({
+                extname: '.min.css'
+            }))
+            .pipe(minifyCSS({
+                keepSpecialComments: 0
+            }))
+            .pipe(gulp.dest(config.compileDir));
+    });
+
+    /**
+     * Moves all of the assets to the compile directory.
+     */
+    gulp.task('compileAssets', function () {
+        return gulp.src('assets/**', {cwd: './' + config.buildDir})
+            .pipe(gulp.dest(config.compileDir + '/assets'));
+    });
+
+    /**
+     * Sets up the configuration constants depending on the environment type.
+     */
+    gulp.task('config', function () {
+        gulp.src('src/config/' + env + '.json')
+            .pipe(ngConstant({
+                name: 'config'
+            }))
+            .pipe(rename({
+                basename: 'config'
+            }))
+            .pipe(gulp.dest(config.buildDir));
+    });
+
+    /**
+     * Find all of the .js and .css files that need to be included in the
+     * index.html file.
+     */
+    gulp.task('index', function () {
+        var scripts = [];
+        var styles = [];
+
+        var vendorJs = globs.sync(config.vendorFiles.js, {
+            nosort: true
+        });
+        vendorJs.push(traceur.RUNTIME_PATH);
+
+        scripts = scripts.concat(vendorJs);
+        scripts.push('app.js');
+        scripts.push('templates.js');
+        scripts.push('config.js');
+
+        var vendorCss = globs.sync(config.vendorFiles.css, {
+            nosort: true
+        });
+
+        styles = styles.concat(vendorCss);
+        styles.push('main.css');
+
+        // TODO: Fix this to allow for vendor css files....
+
+        // Override the styles if building for production.
+        if (env === 'production') {
+            scripts = ['app.min.js'];
+            styles = ['main.min.css'];
+        }
+
+        return gulp.src(config.appFiles.index)
+            .pipe(template({
+                scripts: scripts,
+                styles: styles,
+                env: env
+            }))
+            .pipe(gulpif(env === 'production', minifyHTML({empty: true})))
+            .pipe(gulpif(
+                env === 'production',
+                gulp.dest(config.compileDir),
+                gulp.dest(config.buildDir)
+            ));
+    });
+
+    /**
+     * Watch the app files for any changes and perform the necessary actions
+     * when a change does occur.
+     */
+    gulp.task('watch', function () {
+        gulp.watch(config.appFiles.delta.js, ['buildScripts']);
+        gulp.watch(config.appFiles.tpl, ['buildHtml']);
+        gulp.watch(config.appFiles.delta.less, ['buildStyles']);
+        gulp.watch(config.appFiles.index, ['index']);
+    });
+
+    gulp.task('buildApp', [
+        'buildScripts', 'buildStyles', 'buildHtml', 'buildAssets', 'config',
+        'buildVendorScripts', 'buildVendorCss', 'buildVendorAssets'
+    ]);
+
+    gulp.task('compileApp', [
+        'compileScripts', 'compileStyles', 'compileAssets'
+    ]);
+
+    gulp.task('build', function (callback) {
+        // Ensure clean is run and finished before everything else.
+        runSequence(
+            'clean',
+            ['buildApp'],
+            'index',
+            'watch',
+            callback
+        );
+    });
+
+    gulp.task('compile', function (callback) {
+        runSequence(
+            'clean',
+            'buildApp',
+            ['compileApp'],
+            'index',
+            callback
+        );
+    });
+
+    gulp.task('server', ['connect'], function (callback) {
+        livereload.listen();
+        gulp.watch('build/**').on('change', livereload.changed);
+    });
+
+    gulp.task('default', ['compile']);
+}(require, process));
