@@ -1,4 +1,4 @@
-import TodoController from 'controllers';
+import TodoController from 'app/controllers/TodoController';
 
 angular
     .module('Todo', [])

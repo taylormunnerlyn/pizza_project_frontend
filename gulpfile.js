@@ -97,13 +97,7 @@
             }))
             .pipe(gulpif(env === 'production', ngAnnotate()))
             .pipe(sourcemaps.init())
-            .pipe(traceur({
-                modules: 'instantiate',
-                script: false,
-                sourceMaps: true,
-                moduleName: true
-            }))
-            .pipe(concat('app.js'))
+            .pipe(traceur(config.traceurOptions))
             .pipe(sourcemaps.write('./maps'))
             .pipe(gulp.dest(config.buildDir));
     });
@@ -243,36 +237,39 @@
      * directory structure.
      */
     gulp.task('buildVendorScripts', function () {
-        console.log(traceur.RUNTIME_PATH);
-        config.vendorFiles.js.unshift(traceur.RUNTIME_PATH);
+        var scripts = config.vendor.js.slice(0);
 
-        if (config.vendorFiles.js.length !== 0) {
-            return gulp.src(config.vendorFiles.js, {base: './'})
-                .pipe(gulp.dest(config.buildDir));
-        }
+        // Add the traceur runtime to the vendor scripts.
+        scripts.unshift(traceur.RUNTIME_PATH);
+
+        return gulp.src(scripts)
+            .pipe(gulp.dest(config.buildDir + '/vendor'));
     });
 
-    /**
-     * Moves all of the vendor CSS files into the build directory maintaining
-     * directory structure.
-     */
-    gulp.task('buildVendorCss', function () {
-        if (config.vendorFiles.css.length !== 0) {
-            return gulp.src(config.vendorFiles.css, {base: './'})
-                .pipe(gulp.dest(config.buildDir));
-        }
-    });
-
-    /**
-     * Moves all of the vendor assets into the build directory maintaining
-     * directory structure.
-     */
-    gulp.task('buildVendorAssets', function () {
-        if (config.vendorFiles.assets.length !== 0) {
-            return gulp.src(config.vendorFiles.assets, {base: './'})
-                .pipe(gulp.dest(config.buildDir));
-        }
-    });
+    // I don't think the vendor css and asset tasks are really necessary.
+    // Even though some libraries have extra assets or css, I'm choosing not to
+    // support them.
+//    /**
+//     * Moves all of the vendor CSS files into the build directory maintaining
+//     * directory structure.
+//     */
+//    gulp.task('buildVendorCss', function () {
+//        if (config.vendorFiles.css.length !== 0) {
+//            return gulp.src(config.vendorFiles.css, {base: './'})
+//                .pipe(gulp.dest(config.buildDir));
+//        }
+//    });
+//
+//    /**
+//     * Moves all of the vendor assets into the build directory maintaining
+//     * directory structure.
+//     */
+//    gulp.task('buildVendorAssets', function () {
+//        if (config.vendorFiles.assets.length !== 0) {
+//            return gulp.src(config.vendorFiles.assets, {base: './'})
+//                .pipe(gulp.dest(config.buildDir));
+//        }
+//    });
 
     /**
      * Grab all of the scripts and concatenate them into one file, also minify
@@ -335,25 +332,8 @@
      * index.html file.
      */
     gulp.task('index', function () {
-        var scripts = [];
-        var styles = [];
-
-        var vendorJs = globs.sync(config.vendorFiles.js, {
-            nosort: true
-        });
-        vendorJs.push(traceur.RUNTIME_PATH);
-
-        scripts = scripts.concat(vendorJs);
-        scripts.push('app.js');
-        scripts.push('templates.js');
-        scripts.push('config.js');
-
-        var vendorCss = globs.sync(config.vendorFiles.css, {
-            nosort: true
-        });
-
-        styles = styles.concat(vendorCss);
-        styles.push('main.css');
+        var scripts = config.index.scripts;
+        var styles = ['main.css'];
 
         // TODO: Fix this to allow for vendor css files....
 
@@ -390,7 +370,7 @@
 
     gulp.task('buildApp', [
         'buildScripts', 'buildStyles', 'buildHtml', 'buildAssets', 'config',
-        'buildVendorScripts', 'buildVendorCss', 'buildVendorAssets'
+        'buildVendorScripts'
     ]);
 
     gulp.task('compileApp', [

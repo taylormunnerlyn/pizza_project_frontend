@@ -1,5 +1,4 @@
-// May not need this with our file structure.
-System.paths = {
-//    'app': 'app/*.js'
-};
-register(System);
+//System.paths = {
+//    'app/*': 'app/*.js',
+//    'common/*': 'common/*.js'
+//};/

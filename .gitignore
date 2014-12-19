@@ -1,6 +1,5 @@
-idea/
 .idea/
 build/
 bin/
 node_modules/
-vendor/
+bower_components/

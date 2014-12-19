@@ -1,4 +1,4 @@
-import TodoList from '../common/services/todolist';
+import TodoList from 'common/services/todolist';
 
 let todoList = new TodoList();
 todoList.add('learn AngularJS', true);

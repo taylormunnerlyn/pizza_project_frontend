@@ -6,6 +6,29 @@
         buildDir: 'build',
         compileDir: 'bin',
 
+        traceurOptions: {
+            modules: 'instantiate',
+            script: false,
+//            sourceMaps: true,
+            moduleName: true
+        },
+
+        index: {
+            // Define the load order of the scripts in index.html
+            scripts: [
+                '/vendor/traceur-runtime.js',
+                '/vendor/es6-module-loader-sans-promises.src.js',
+                '/vendor/system.src.js',
+                '/vendor/extension-register.js',
+                '/vendor/runtime-paths.js',
+                '/vendor/lodash.js',
+                '/vendor/angular.js',
+                '/vendor/angular-ui-router.js',
+                '/templates.js',
+                '/config.js'
+            ]
+        },
+
         appFiles: {
             // Grabs all of the assets for the app.
             assets: ['src/assets/**'],
@@ -47,16 +70,15 @@
          * control how another package is structured I can't automate this
          * process.
          */
-        vendorFiles: {
+        vendor: {
             js: [
-                // traceur is imported before all scripts.
                 'node_modules/es6-module-loader/dist/es6-module-loader-sans-promises.src.js',
                 'node_modules/systemjs/dist/system.src.js',
                 'node_modules/systemjs/lib/extension-register.js',
                 'tools/runtime-paths.js',
-                'vendor/lodash/dist/lodash.js',
-                'vendor/angular/angular.js',
-                'vendor/angular-ui-router/angular-ui-router.js'
+                'bower_components/lodash/dist/lodash.js',
+                'bower_components/angular/angular.js',
+                'bower_components/angular-ui-router/release/angular-ui-router.js'
             ],
 
             css: [

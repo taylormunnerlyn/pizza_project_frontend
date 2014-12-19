@@ -1,5 +1,5 @@
-import Todo from 'todo';
-import {values} from 'generators';
+import Todo from 'common/services/todo';
+import {values} from 'common/services/generators';
 
 class TodoList {
     constructor() {
