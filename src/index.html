@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-controller="TodoController as TodoCtrl" ng-cloak>
+<html ng-controller="MainController as MainCtrl" ng-cloak>
     <head>
         <title>Todo</title>
 
@@ -11,6 +11,9 @@
         <link rel="stylesheet" type="text/css" href="<%= file %>"><% }); %>
     </head>
     <body>
+        <a ui-sref="todoList">Todo List</a>
+
+        <div ui-view="main"></div>
         <h2>To Do List</h2>
         <div>
             {{ TodoCtrl.todoList.getUncompletedCount() }} of {{ TodoCtrl.todoList.length }} remaining
