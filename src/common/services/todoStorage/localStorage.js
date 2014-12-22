@@ -1,9 +1,9 @@
 angular
-    .module('todomvc')
+    .module('services.todoStorage.localStorage', [])
     .factory('localStorage', localStorageFactory);
 
 function localStorageFactory($q) {
-    let STORAGE_ID = 'todos-angularjs';
+    const STORAGE_ID = 'todos-angularjs';
 
     let store = {
         todos: [],

@@ -1,5 +1,5 @@
 angular
-    .module('todomvc')
+    .module('directives.todoEscape', [])
     .directive('todoEscape', todoEscapeDirective);
 
 function todoEscapeDirective() {

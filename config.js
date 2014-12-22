@@ -9,7 +9,6 @@
         traceurOptions: {
             modules: 'instantiate',
             script: false,
-//            sourceMaps: true,
             moduleName: true
         },
 
@@ -22,10 +21,15 @@
                 '/vendor/extension-register.js',
                 '/vendor/runtime-paths.js',
                 '/vendor/lodash.js',
+                '/vendor/base.js',
                 '/vendor/angular.js',
                 '/vendor/angular-ui-router.js',
                 '/templates.js',
                 '/config.js'
+            ],
+            styles: [
+                '/vendor/base.css',
+                '/main.css'
             ]
         },
 
@@ -77,14 +81,17 @@
                 'node_modules/systemjs/lib/extension-register.js',
                 'tools/runtime-paths.js',
                 'bower_components/lodash/dist/lodash.js',
+                'bower_components/todomvc-common/base.js',
                 'bower_components/angular/angular.js',
                 'bower_components/angular-ui-router/release/angular-ui-router.js'
             ],
 
             css: [
+                'bower_components/todomvc-common/base.css'
             ],
 
             assets: [
+                'bower_components/todomvc-common/bg.png'
             ]
         }
     };

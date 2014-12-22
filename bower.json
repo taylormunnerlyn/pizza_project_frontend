@@ -9,6 +9,7 @@
     "lodash": "2.4.1",
     "traceur": "0.0.74",
     "angular-ui-router": "0.2.13",
-    "systemjs": "*"
+    "systemjs": "*",
+    "todomvc-common": "0.3.1"
   }
 }

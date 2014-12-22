@@ -1,22 +1,48 @@
 import 'common/services/todoStorage/todoStorage';
+import 'common/directives/todoEscape';
+import 'common/directives/todoFocus';
 
 angular
-    .module('todomvc')
+    .module('todomvc.todo', [
+        'ui.router',
+        'services.todoStorage',
+        'directives.todoEscape',
+        'directives.todoFocus'
+    ])
     .config(config)
-    .controller('TodoCtrl', TodoController);
+    .controller('TodoController', TodoController);
 
 function config($stateProvider) {
-    
+    $stateProvider.state('todo', {
+        url: '/:status',
+        views: {
+            'main': {
+                controller: 'TodoController',
+                controllerAs: 'TodoCtrl',
+                templateUrl: 'app/todo/todo.tpl.html'
+            }
+        },
+        resolve: {
+            store: function (todoStorage) {
+                return todoStorage.then(function (module) {
+                    module.get();
+                    return module;
+                });
+            }
+        }
+    });
 }
 
-function TodoController($scope, $stateParams, $filter, todoStorage) {
+function TodoController($scope, $stateParams, $filter, store) {
     let vm = this;
-    let todos = $scope.todos = todoStorage.todos;
+    let todos = vm.todos = store.todos;
 
     vm.newTodo = '';
     vm.editedTodo = null;
 
-    $scope.$watch(vm.todos, function () {
+    $scope.$watch(function () {
+        return vm.todos;
+    }, function () {
         vm.remainingCount = $filter('filter')(todos, {completed: false}).length;
         vm.completedCount = todos.length - vm.remainingCount;
         vm.allChecked = !vm.remainingCount;
@@ -42,9 +68,9 @@ function TodoController($scope, $stateParams, $filter, todoStorage) {
         }
 
         vm.saving = true;
-        todoStorage
+        store
             .insert(newTodo)
-            .then(function success() {
+            .then(function () {
                 vm.newTodo = '';
             })
             .finally(function () {
@@ -55,7 +81,7 @@ function TodoController($scope, $stateParams, $filter, todoStorage) {
     vm.editTodo = function (todo) {
         vm.editedTodo = todo;
         // Clone the original todo to restore it on demand.
-        vm.originalTodo = angular.extend({}, todo);
+        vm.originalTodo = angular.copy(todo);
     };
 
     vm.saveEdits = function (todo, event) {
@@ -80,10 +106,13 @@ function TodoController($scope, $stateParams, $filter, todoStorage) {
             return;
         }
 
-        todoStorage[todo.title ? 'put' : 'delete'](todo)
-            .then(function success() {}, function error() {
-                todo.title = vm.originalTodo.title;
-            })
+        store[todo.title ? 'put' : 'delete'](todo)
+            .then(
+                angular.noop,
+                function() {
+                    todo.title = vm.originalTodo.title;
+                }
+            )
             .finally(function () {
                 vm.editedTodo = null;
             });
@@ -97,11 +126,11 @@ function TodoController($scope, $stateParams, $filter, todoStorage) {
     };
 
     vm.removeTodo = function (todo) {
-        todoStorage.delete(todo);
+        store.delete(todo);
     };
 
     vm.saveTodo = function (todo) {
-        todoStorage.put(todo);
+        store.put(todo);
     };
 
     vm.toggleCompleted = function (todo, completed) {
@@ -109,14 +138,17 @@ function TodoController($scope, $stateParams, $filter, todoStorage) {
             todo.completed = completed;
         }
 
-        todoStorage.put(todo, todos.indexOf(todo))
-            .then(function success() {}, function error() {
-                todo.completed = !todo.completed;
-            });
+        store.put(todo, todos.indexOf(todo))
+            .then(
+                angular.noop,
+                function () {
+                    todo.completed = !todo.completed;
+                }
+            );
     };
 
     vm.clearCompletedTodos = function () {
-        todoStorage.clearCompleted();
+        store.clearCompleted();
     };
 
     vm.markAll = function (completed) {

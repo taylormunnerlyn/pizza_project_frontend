@@ -246,30 +246,27 @@
             .pipe(gulp.dest(config.buildDir + '/vendor'));
     });
 
-    // I don't think the vendor css and asset tasks are really necessary.
-    // Even though some libraries have extra assets or css, I'm choosing not to
-    // support them.
-//    /**
-//     * Moves all of the vendor CSS files into the build directory maintaining
-//     * directory structure.
-//     */
-//    gulp.task('buildVendorCss', function () {
-//        if (config.vendorFiles.css.length !== 0) {
-//            return gulp.src(config.vendorFiles.css, {base: './'})
-//                .pipe(gulp.dest(config.buildDir));
-//        }
-//    });
-//
-//    /**
-//     * Moves all of the vendor assets into the build directory maintaining
-//     * directory structure.
-//     */
-//    gulp.task('buildVendorAssets', function () {
-//        if (config.vendorFiles.assets.length !== 0) {
-//            return gulp.src(config.vendorFiles.assets, {base: './'})
-//                .pipe(gulp.dest(config.buildDir));
-//        }
-//    });
+    /**
+     * Moves all of the vendor CSS files into the build directory maintaining
+     * directory structure.
+     */
+    gulp.task('buildVendorCss', function () {
+        if (config.vendor.css.length !== 0) {
+            return gulp.src(config.vendor.css)
+                .pipe(gulp.dest(config.buildDir + '/vendor'));
+        }
+    });
+
+    /**
+     * Moves all of the vendor assets into the build directory maintaining
+     * directory structure.
+     */
+    gulp.task('buildVendorAssets', function () {
+        if (config.vendor.assets.length !== 0) {
+            return gulp.src(config.vendor.assets)
+                .pipe(gulp.dest(config.buildDir + '/vendor'));
+        }
+    });
 
     /**
      * Grab all of the scripts and concatenate them into one file, also minify
@@ -333,9 +330,9 @@
      */
     gulp.task('index', function () {
         var scripts = config.index.scripts;
-        var styles = ['main.css'];
+        var styles = config.index.styles;
 
-        // TODO: Fix this to allow for vendor css files....
+//        TODO: Fix this to allow for vendor css files....
 
         // Override the styles if building for production.
         if (env === 'production') {
@@ -370,7 +367,7 @@
 
     gulp.task('buildApp', [
         'buildScripts', 'buildStyles', 'buildHtml', 'buildAssets', 'config',
-        'buildVendorScripts'
+        'buildVendorScripts', 'buildVendorCss', 'buildVendorAssets'
     ]);
 
     gulp.task('compileApp', [

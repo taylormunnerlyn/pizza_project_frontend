@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-controller="MainController as MainCtrl" ng-cloak>
+<html ng-controller="MainController as MainCtrl">
     <head>
         <title>Todo</title>
 
@@ -14,33 +14,14 @@
         <a ui-sref="todoList">Todo List</a>
 
         <div ui-view="main"></div>
-        <h2>To Do List</h2>
-        <div>
-            {{ TodoCtrl.todoList.getUncompletedCount() }} of {{ TodoCtrl.todoList.length }} remaining
-            <button ng-click="TodoCtrl.todoList.archiveCompleted()">Archive Completed</button>
-        </div>
-        <br>
-
-        <form ng-submit="TodoCtrl.addTodo()">
-            <input type="text" ng-model="TodoCtrl.todoText" size="30" placeholder="enter new todo here" autofocus>
-            <input type="submit" value="Add" ng-disabled="!TodoCtrl.todoText">
-        </form>
-
-        <ul class="unstyled">
-            <li ng-repeat="(timestamp, todo) in TodoCtrl.todoList.todos">
-                <form>
-                    <input type="checkbox" ng-model="todo.done">
-                    <span class="done-{{ todo.done }}">{{ todo.text }}</span>
-                    <input type="button" ng-click="TodoCtrl.todoList.remove(todo)" value="Delete">
-                </form>
-            </li>
-        </ul>
 
         <!-- compiled JavaScript --><% scripts.forEach(function (file) { %>
         <script type="text/javascript" src="<%= file %>"></script><% }); %>
         <script>
             System.import('app/app').then(function () {
-                angular.bootstrap(document, ['Todo']);
+                angular.element(document).ready(function () {
+                    angular.bootstrap(document, ['todomvc']);
+                });
             });
         </script>
     </body>

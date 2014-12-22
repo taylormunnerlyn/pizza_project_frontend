@@ -1,5 +1,5 @@
 angular
-    .module('todomvc')
+    .module('directives.todoFocus', [])
     .directive('todoFocus', todoFocusDirective);
 
 function todoFocusDirective($timeout) {

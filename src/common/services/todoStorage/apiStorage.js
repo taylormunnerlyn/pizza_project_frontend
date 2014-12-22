@@ -1,6 +1,6 @@
 angular
-    .module('todomvc')
-    .factory('api', apiFactory);
+    .module('services.todoStorage.apiStorage', [])
+    .factory('apiStorage', apiFactory);
 
 function apiFactory($http) {
     let store = {
