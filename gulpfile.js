@@ -15,7 +15,6 @@
         runSequence = require('run-sequence'),
         csslint = require('gulp-csslint'),
         connect = require('gulp-connect'),
-        livereload = require('gulp-livereload'),
         ngConstant = require('gulp-ng-constant'),
         gulpif = require('gulp-if'),
         changed = require('gulp-changed'),
@@ -28,6 +27,7 @@
         logSymbols = require('log-symbols'),
         stringLength = require('string-length'),
         traceur = require('gulp-traceur'),
+        argv = require('yargs').argv,
         karma = require('karma').server,
         config = require('./config.js'),
         env = process.env.NODE_ENV || 'dev',
@@ -40,7 +40,8 @@
     gulp.task('connect', function () {
         connect.server({
             root: ['bin', 'build'],
-            port: 9000,
+            port: parseInt(argv.port) || 8000,
+            livereload: true,
 
             middleware: function () {
                 return [historyApiFallback];
@@ -102,7 +103,8 @@
             .pipe(sourcemaps.init())
             .pipe(traceur(config.traceurOptions))
             .pipe(sourcemaps.write('./maps'))
-            .pipe(gulp.dest(config.buildDir));
+            .pipe(gulp.dest(config.buildDir))
+            .pipe(connect.reload());
     });
 
     /**
@@ -207,7 +209,8 @@
                 );
             }))
             .pipe(sourcemaps.write('./maps'))
-            .pipe(gulp.dest(config.buildDir));
+            .pipe(gulp.dest(config.buildDir))
+            .pipe(connect.reload());
     });
 
     /**
@@ -224,7 +227,8 @@
                 module: 'htmlTemplates',
                 standalone: true
             }))
-            .pipe(gulp.dest(config.buildDir));
+            .pipe(gulp.dest(config.buildDir))
+            .pipe(connect.reload());
     });
 
     /**
@@ -351,7 +355,8 @@
                 compiling,
                 gulp.dest(config.compileDir),
                 gulp.dest(config.buildDir)
-            ));
+            ))
+            .pipe(connect.reload());
     });
 
     /**
@@ -381,6 +386,7 @@
             ['buildApp'],
             'index',
             'watch',
+            'connect',
             callback
         );
     });
@@ -395,10 +401,7 @@
         );
     });
 
-    gulp.task('server', ['connect'], function () {
-        livereload.listen();
-        gulp.watch('build/**').on('change', livereload.changed);
-    });
+    gulp.task('server', ['connect']);
 
     gulp.task('default', ['compile']);
 }(require, process));
