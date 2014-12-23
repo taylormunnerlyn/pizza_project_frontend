@@ -8,7 +8,7 @@ angular
     ])
     .factory('todoStorage', todoStorageFactory);
 
-function todoStorageFactory($http, $injector, localStorage, apiStorage) {
+function todoStorageFactory($http, $injector) {
     // Detect if an API backend is present. If so, return the API module, else
     // hand off the localStorage adapter.
     return $http.get('/api')

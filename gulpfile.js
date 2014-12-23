@@ -2,7 +2,6 @@
     'use strict';
 
     var gulp = require('gulp'),
-        globs = require('globs'),
         historyApiFallback = require('connect-history-api-fallback'),
         rimraf = require('gulp-rimraf'),
         jshint = require('gulp-jshint'),
@@ -31,7 +30,8 @@
         traceur = require('gulp-traceur'),
         karma = require('karma').server,
         config = require('./config.js'),
-        env = process.env.NODE_ENV || 'dev';
+        env = process.env.NODE_ENV || 'dev',
+        compiling = process.argv.indexOf('compile') !== -1;
 
     /**
      * Start the development server on port 9000. Runs from the `bin/` folder if
@@ -78,9 +78,13 @@
     /**
      * Lints all of the app .js files and moves them to the build directory.
      *
-     * Runs ngAnnotate if NODE_ENV is set to production.
+     * Runs ngAnnotate if compiling.
      */
     gulp.task('buildScripts', function () {
+        if (compiling) {
+            config.traceurOptions.modules = 'inline';
+        }
+
         return gulp.src(config.appFiles.js)
             .pipe(changed(config.buildDir))
             .pipe(jshint({
@@ -95,7 +99,6 @@
                 return file.relative + ' line ' +
                     file.jshint.results[0].error.line + '\n';
             }))
-            .pipe(gulpif(env === 'production', ngAnnotate()))
             .pipe(sourcemaps.init())
             .pipe(traceur(config.traceurOptions))
             .pipe(sourcemaps.write('./maps'))
@@ -216,7 +219,7 @@
             .pipe(template({
                 env: env
             }))
-            .pipe(gulpif(env === 'production', minifyHTML({empty: true})))
+            .pipe(gulpif(compiling, minifyHTML({empty: true})))
             .pipe(templateCache('templates.js', {
                 module: 'htmlTemplates',
                 standalone: true
@@ -237,12 +240,7 @@
      * directory structure.
      */
     gulp.task('buildVendorScripts', function () {
-        var scripts = config.vendor.js.slice(0);
-
-        // Add the traceur runtime to the vendor scripts.
-        scripts.unshift(traceur.RUNTIME_PATH);
-
-        return gulp.src(scripts)
+        return gulp.src(config.vendor.js)
             .pipe(gulp.dest(config.buildDir + '/vendor'));
     });
 
@@ -273,15 +271,16 @@
      * that file into another file.
      */
     gulp.task('compileScripts', function () {
-        var files = config.vendorFiles.js;
+        var files = config.vendor.js;
 
-        files = files.concat([
-            'app.js',
-            'templates.js',
-            'config.js'
-        ]);
+        files.push(config.buildDir + '/' + 'app/**/*.js');
+        files.push(config.buildDir + '/' + 'common/**/*.js');
+        files.push(config.buildDir + '/' + 'templates.js');
+        files.push(config.buildDir + '/' + 'config.js');
 
-        return gulp.src(files, {cwd: './' + config.buildDir}, {nosort: true})
+
+        return gulp.src(files, {}, {nosort: true})
+            .pipe(ngAnnotate())
             .pipe(concat('app.min.js'))
             .pipe(uglify())
             .pipe(gulp.dest(config.compileDir));
@@ -292,10 +291,8 @@
      * into main.min.css.
      */
     gulp.task('compileStyles', function () {
-        return gulp.src('*.css', {cwd: './' + config.buildDir})
-            .pipe(rename({
-                extname: '.min.css'
-            }))
+        return gulp.src(config.index.styles, {cwd: 'build'})
+            .pipe(concat('main.min.css'))
             .pipe(minifyCSS({
                 keepSpecialComments: 0
             }))
@@ -306,8 +303,12 @@
      * Moves all of the assets to the compile directory.
      */
     gulp.task('compileAssets', function () {
-        return gulp.src('assets/**', {cwd: './' + config.buildDir})
-            .pipe(gulp.dest(config.compileDir + '/assets'));
+        var assets = config.vendor.assets;
+
+        assets.push(config.buildDir + '/assets/**');
+
+        return gulp.src(assets)
+            .pipe(gulp.dest(config.compileDir));
     });
 
     /**
@@ -332,10 +333,8 @@
         var scripts = config.index.scripts;
         var styles = config.index.styles;
 
-//        TODO: Fix this to allow for vendor css files....
-
-        // Override the styles if building for production.
-        if (env === 'production') {
+        // Override the styles if compiling.
+        if (compiling) {
             scripts = ['app.min.js'];
             styles = ['main.min.css'];
         }
@@ -344,11 +343,12 @@
             .pipe(template({
                 scripts: scripts,
                 styles: styles,
-                env: env
+                env: env,
+                compile: compiling
             }))
-            .pipe(gulpif(env === 'production', minifyHTML({empty: true})))
+            .pipe(gulpif(compiling, minifyHTML({empty: true})))
             .pipe(gulpif(
-                env === 'production',
+                compiling,
                 gulp.dest(config.compileDir),
                 gulp.dest(config.buildDir)
             ));
@@ -395,7 +395,7 @@
         );
     });
 
-    gulp.task('server', ['connect'], function (callback) {
+    gulp.task('server', ['connect'], function () {
         livereload.listen();
         gulp.watch('build/**').on('change', livereload.changed);
     });

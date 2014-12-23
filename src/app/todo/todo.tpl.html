@@ -23,7 +23,7 @@
     </section>
     <footer id="footer" ng-show="TodoCtrl.todos.length">
         <span id="todo-count"><strong>{{ TodoCtrl.remainingCount }}</strong>
-            <ng-pluralize count="TodoCtrl.remainingCount" when="{ one: 'item left', other: 'items left' }"></ng-pluralize>
+            <ng-pluralize count="TodoCtrl.remainingCount" when="{ one: 'item left', other: ' items left' }"></ng-pluralize>
         </span>
         <ul id="filters">
             <li>

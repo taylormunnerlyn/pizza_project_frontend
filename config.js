@@ -15,21 +15,21 @@
         index: {
             // Define the load order of the scripts in index.html
             scripts: [
-                '/vendor/traceur-runtime.js',
-                '/vendor/es6-module-loader-sans-promises.src.js',
-                '/vendor/system.src.js',
-                '/vendor/extension-register.js',
-                '/vendor/runtime-paths.js',
-                '/vendor/lodash.js',
-                '/vendor/base.js',
-                '/vendor/angular.js',
-                '/vendor/angular-ui-router.js',
-                '/templates.js',
-                '/config.js'
+                'vendor/traceur-runtime.js',
+                'vendor/es6-module-loader-sans-promises.src.js',
+                'vendor/system.src.js',
+                'vendor/extension-register.js',
+                'vendor/runtime-paths.js',
+                'vendor/lodash.js',
+                'vendor/base.js',
+                'vendor/angular.js',
+                'vendor/angular-ui-router.js',
+                'templates.js',
+                'config.js'
             ],
             styles: [
-                '/vendor/base.css',
-                '/main.css'
+                'vendor/base.css',
+                'main.css'
             ]
         },
 
@@ -40,8 +40,7 @@
             // Grab all .js files in the src/ directory and subdirectories aside
             // from tests and asset .js files.
             js: [
-                'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js',
-                '!src/config/**'
+                'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js'
             ],
             jsTest: ['src/**/*.spec.js'],
 
@@ -76,6 +75,7 @@
          */
         vendor: {
             js: [
+                'node_modules/traceur//bin/traceur-runtime.js',
                 'node_modules/es6-module-loader/dist/es6-module-loader-sans-promises.src.js',
                 'node_modules/systemjs/dist/system.src.js',
                 'node_modules/systemjs/lib/extension-register.js',
