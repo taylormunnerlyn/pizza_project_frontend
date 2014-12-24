@@ -27,13 +27,13 @@
         </span>
         <ul id="filters">
             <li>
-                <a ng-class="{selected: TodoCtrl.status == ''} " href="#/">All</a>
+                <a ng-class="{selected: TodoCtrl.status == ''} " ui-sref="todo({status: ''})">All</a>
             </li>
             <li>
-                <a ng-class="{selected: TodoCtrl.status == 'active'}" href="#/active">Active</a>
+                <a ng-class="{selected: TodoCtrl.status == 'active'}" ui-sref="todo({status: 'active'})">Active</a>
             </li>
             <li>
-                <a ng-class="{selected: TodoCtrl.status == 'completed'}" href="#/completed">Completed</a>
+                <a ng-class="{selected: TodoCtrl.status == 'completed'}" ui-sref="todo({status: 'completed'})">Completed</a>
             </li>
         </ul>
         <button id="clear-completed" ng-click="TodoCtrl.clearCompletedTodos()" ng-show="TodoCtrl.completedCount">Clear completed ({{ TodoCtrl.completedCount }})</button>

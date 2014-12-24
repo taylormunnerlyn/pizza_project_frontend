@@ -9,13 +9,15 @@ angular
     .config(config)
     .controller('MainController', MainController);
 
-function config ($urlRouterProvider) {
+function config ($urlRouterProvider, $locationProvider) {
     $urlRouterProvider.otherwise('/');
+
+    $locationProvider.html5Mode(true);
 }
 
 function MainController() {
     var vm = this;
-
+ 
     vm.message = 'I don\'t do anything';
 
     console.log(vm.message);
