@@ -34,6 +34,8 @@ Runs all of the tests but runs the tests again if any changes occur.
 ### config
 This task will take one of the .json files in `src/config/` and create a config angular module that can be imported into your app. The config file that it selects by default is the `dev.json` file. To change which one is used set the `NODE_ENV` environment variable to the name of the file you want to use, excluding the file type.
 
+`NODE_ENV=production gulp compile`
+
 #### Example
 **dev.json**
 
