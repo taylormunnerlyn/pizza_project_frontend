@@ -10,13 +10,13 @@ into one file and removes the need for SystemJS to be included. Once ES6 and
 HTTP/2.0 have better support in browsers the need for concatenated and minified
 files should go away. Until then this concatenated code is here to stay.
 
-####Commands
+#### Commands
 * `gulp build` This is what you'll be using for most of development.
   This command will gather up all of the app files and dependencies and toss
   them into the `build/` directory. It will also start the development server
   with livereload enabled as well as a file watcher.
 
-  ####Options
+  #### Options
   * `--port`
     Setting this will change the port the development server uses. Much easier
     than changing it manually in `gulpfile.js`.
@@ -41,7 +41,7 @@ files should go away. Until then this concatenated code is here to stay.
 * `gulp tdd`
   Runs all of the tests but runs the tests again if any changes occur.
 
-####Tasks
+#### Tasks
 * `config`
   This task will take one of the .json files in `src/config/` and create a
   config angular module that can be imported into your app. The config file that
@@ -77,7 +77,7 @@ files should go away. Until then this concatenated code is here to stay.
   need to do is make sure the `htmlTemplates` module is included in your app
   somewhere preferably in `app.js`.
 
-####Tests
+#### Tests
 Tests are a bit tricky to get running with ES6 code, but that's one of the main
 reasons why I made this template. All tests can run ES6 code and you will need
 to use `import` statements to import the module you are testing. Everything
