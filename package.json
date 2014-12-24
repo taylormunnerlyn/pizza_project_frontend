@@ -1,16 +1,11 @@
 {
-  "author": "Izeni, Inc.",
-  "name": "test-traceur",
+  "author": "Jesse Wardle",
+  "name": "es6-template",
   "version": "0.0.1",
-  "homepage": "https://www.timey.com",
-  "licenses": {
-    "type": "MIT",
-    "url": "https://dev.izeni.net/timey/timey-frontend/master/LICENSE"
-  },
-  "bugs": "https://dev.izeni.net/timey/timey-frontend/issues",
+  "bugs": "https://dev.izeni.net/jwardle/es6-template/issues",
   "repository": {
     "type": "git",
-    "url": "git@dev.izeni.net:timey/timey-frontend.git"
+    "url": "git@dev.izeni.net:jwardle/es6-template.git"
   },
   "dependencies": {
     "es6-module-loader": "^0.10.0",

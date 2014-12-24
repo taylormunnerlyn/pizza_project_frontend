@@ -17,7 +17,7 @@ function config ($urlRouterProvider, $locationProvider) {
 
 function MainController() {
     var vm = this;
- 
+
     vm.message = 'I don\'t do anything';
 
     console.log(vm.message);
