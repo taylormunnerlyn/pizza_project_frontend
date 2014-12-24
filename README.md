@@ -16,7 +16,7 @@ files should go away. Until then this concatenated code is here to stay.
   them into the `build/` directory. It will also start the development server
   with livereload enabled as well as a file watcher.
 
-  #### Options
+  **Options**
   * `--port`
     Setting this will change the port the development server uses. Much easier
     than changing it manually in `gulpfile.js`.
