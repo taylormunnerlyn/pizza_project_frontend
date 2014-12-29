@@ -10,6 +10,8 @@
             basePath: '../',
 
             plugins: [
+                'karma-chrome-launcher',
+                'karma-firefox-launcher',
                 'karma-jasmine',
                 'karma-traceur-preprocessor'
             ],
@@ -23,6 +25,7 @@
             files: [
                 {pattern: 'src/**/*.js', included: false},
 
+                'node_modules/traceur/bin/traceur.js',
                 'node_modules/traceur/bin/traceur-runtime.js',
                 'node_modules/es6-module-loader/dist/es6-module-loader-sans-promises.src.js',
                 'node_modules/systemjs/dist/system.src.js',
@@ -31,6 +34,7 @@
                 'bower_components/todomvc-common/base.js',
                 'bower_components/angular/angular.js',
                 'bower_components/angular-ui-router/release/angular-ui-router.js',
+                'bower_components/angular-mocks/angular-mocks.js',
                 'karma/test-main.js'
             ],
 
@@ -52,8 +56,12 @@
                 moduleName: 'htmlTemplates'
             },
 
+            // For some reason add the moduleName option here will break tests.
             traceurPreprocessor: {
-                options: appConfig.tracuerOptions
+                options: {
+                    modules: 'instantiate',
+                    scripts: false
+                }
             },
 
             // test results reporter to use
