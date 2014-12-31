@@ -2,16 +2,6 @@ import 'common/services/localStorage/localStorage';
 import 'common/directives/todoEscape';
 import 'common/directives/todoFocus';
 
-angular
-    .module('todomvc.todo', [
-        'ui.router',
-        'services.localStorage',
-        'directives.todoEscape',
-        'directives.todoFocus'
-    ])
-    .config(config)
-    .controller('TodoController', TodoController);
-
 function config($stateProvider) {
     $stateProvider.state('todo', {
         url: '/:status',
@@ -25,35 +15,57 @@ function config($stateProvider) {
     });
 }
 
-function TodoController($scope, $stateParams, $filter, localStorage) {
-    let vm = this;
-    let todos = vm.todos = localStorage.todos;
+class TodoController {
+    constructor($scope, $stateParams, $filter, localStorage) {
+        this.$scope = $scope;
+        this.$stateParams = $stateParams;
+        this.$filter = $filter;
+        this.localStorage = localStorage;
 
-    localStorage.get();
+        localStorage.get();
 
-    vm.newTodo = '';
-    vm.editedTodo = null;
+        this.todos = localStorage.todos;
+        this.newTodo = '';
+        this.editedTodo = null;
+        this.originalTodo = null;
+        this.remainingCount = 0;
+        this.status = '';
+        this.saving = false;
+        this.saveEvent = null;
+        this.reverted = false;
+        this.allChecked = false;
+        this.completedCount = 0;
 
-    $scope.$watch(function () {
-        return vm.todos;
-    }, function () {
-        vm.remainingCount = $filter('filter')(todos, {completed: false}).length;
-        vm.completedCount = todos.length - vm.remainingCount;
-        vm.allChecked = !vm.remainingCount;
-    }, true);
+        $scope.$watch(() => {
+            return this.todos;
+        }, () => {
+            this.remainingCount = $filter('filter')(
+                this.todos, {completed: false}
+            ).length;
+            this.completedCount = this.todos.length - this.remainingCount;
+            this.allChecked = !this.remainingCount;
+        }, true);
 
-    // Monitor the current route for changes and adjust the filter accordingly.
-    $scope.$on('$stateChangeSuccess', function () {
-        let status = vm.status = $stateParams.status || '';
+        $scope.$on('$stateChangeSuccess', () => {
+            this.status = $stateParams.status || '';
 
-        vm.statusFilter = (status === 'active') ?
-            {completed: false} : (status === 'completed') ?
-            {completed: true} : null;
-    });
+            switch(this.status) {
+                case 'active':
+                    this.statusFilter = {completed: false};
+                    break;
+                case 'completed':
+                    this.statusFilter = {completed: true};
+                    break;
+                default:
+                    this.statusFilter = null;
+                    break;
+            }
+        });
+    }
 
-    vm.addTodo = function () {
+    addTodo() {
         let newTodo = {
-            title: vm.newTodo.trim(),
+            title: this.newTodo.trim(),
             completed: false
         };
 
@@ -61,95 +73,94 @@ function TodoController($scope, $stateParams, $filter, localStorage) {
             return;
         }
 
-        vm.saving = true;
-        localStorage
+        this.saving = true;
+        this.localStorage
             .insert(newTodo)
-            .then(function () {
-                vm.newTodo = '';
+            .then(() => {
+                this.newTodo = '';
             })
-            .finally(function () {
-                vm.saving = false;
+            .finally(() => {
+                this.saving = false;
             });
-    };
+    }
 
-    vm.editTodo = function (todo) {
-        vm.editedTodo = todo;
-        // Clone the original todo to restore it on demand.
-        vm.originalTodo = angular.copy(todo);
-    };
+    editTodo(todo) {
+        this.editedTodo = todo;
 
-    vm.saveEdits = function (todo, event) {
+        // Clone the original todo to restor it on demand.
+        this.originalTodo = angular.copy(todo);
+    }
+
+    saveEdits(todo, event) {
         // Blur events are automatically triggered after the form submit event.
         // This does some unfortunate logic handling to prevent saving twice.
-        if (event === 'blur' && vm.saveEvent === 'submit') {
-            vm.saveEvent = null;
+        if (event === 'blur' && this.saveEvent === 'submit') {
+             this.saveEvent = null;
+        }
+
+        this.saveEvent = event;
+
+        if (this.reverted) {
+            // Todo edits were reverted, don't save.
+            this.reverted = false;
             return;
         }
 
-        vm.saveEvent = event;
-
-        if (vm.reverted) {
-            // Todo edits were reverted-- don't save.
-            vm.reverted = null;
-            return;
-        }
-
-        todo.title = todo.title.trim();
-
-        if (todo.title === vm.originalTodo.title) {
-            return;
-        }
-
-        localStorage[todo.title ? 'put' : 'delete'](todo)
-            .then(
-                angular.noop,
-                function() {
-                    todo.title = vm.originalTodo.title;
-                }
-            )
-            .finally(function () {
-                vm.editedTodo = null;
+        this.localStorage[todo.title ? 'put' : 'delete'](todo)
+            .then(angular.noop, () => {
+                todo.title = this.originalTodo.title;
+            })
+            .finally(() => {
+                this.editedTodo = null;
             });
-    };
+    }
 
-    vm.revertEdits = function (todo) {
-        todos[todos.indexOf(todo)] = vm.originalTodo;
-        vm.editedTodo = null;
-        vm.originalTodo = null;
-        vm.reverted = true;
-    };
+    revertEdits(todo) {
+        this.todos[this.todos.indexOf(todo)] = this.originalTodo;
+        this.editedTodo = null;
+        this.originalTodo = null;
+        this.reverted = true;
+    }
 
-    vm.removeTodo = function (todo) {
-        localStorage.delete(todo);
-    };
+    removeTodo(todo) {
+        this.localStorage.delete(todo);
+    }
 
-    vm.saveTodo = function (todo) {
-        localStorage.put(todo);
-    };
+    saveTodo(todo) {
+        this.localStorage.put(todo);
+    }
 
-    vm.toggleCompleted = function (todo, completed) {
+    toggleCompleted(todo, completed) {
         if (angular.isDefined(completed)) {
             todo.completed = completed;
         }
 
-        localStorage.put(todo, todos.indexOf(todo))
-            .then(
-                angular.noop,
-                function () {
-                    todo.completed = !todo.completed;
-                }
-            );
-    };
+        this.localStorage
+            .put(todo, this.todos.indexOf(todo))
+            .then(angular.noop, () => {
+                todo.completed = !todo.completed;
+            });
+    }
 
-    vm.clearCompletedTodos = function () {
-        localStorage.clearCompleted();
-    };
+    clearCompletedTodos() {
+        this.localStorage.clearCompleted();
+    }
 
-    vm.markAll = function (completed) {
-        todos.forEach(function (todo) {
+    markAll(completed) {
+        this.todos.forEach((todo) => {
             if (todo.completed !== completed) {
-                vm.toggleCompleted(todo, completed);
+                this.toggleCompleted(todo, completed);
             }
         });
-    };
+    }
 }
+
+angular
+    .module('todomvc.todo', [
+        'ui.router',
+        'services.localStorage',
+        'directives.todoEscape',
+        'directives.todoFocus'
+    ])
+    .config(config)
+    .controller('TodoController', TodoController);
