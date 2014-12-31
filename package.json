@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "es6-module-loader": "^0.10.0",
-    "systemjs": "^0.10.2",
+    "systemjs": "^0.11.0",
     "traceur": "^0.0.79"
   },
   "devDependencies": {
