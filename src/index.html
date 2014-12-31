@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html <% if (compile) { %>ng-app="todomvc"<% } %> ng-controller="MainController as MainCtrl">
+<html <% if (compile) { %>ng-app="todomvc" <% } %>ng-controller="MainController as MainCtrl">
     <head>
         <title>Todo</title>
 
@@ -15,14 +15,19 @@
 
         <!-- compiled JavaScript --><% scripts.forEach(function (file) { %>
         <script type="text/javascript" src="<%= file %>"></script><% }); %>
-        <% if (!compile) { %>
         <script>
-            System.import('app/app').then(function () {
-                angular.element(document).ready(function () {
-                    angular.bootstrap(document, ['todomvc']);
+<% if (!compile) { %>
+            System
+                .import('app/app')
+                .then(function () {
+                    angular.element(document).ready(function () {
+                        angular.bootstrap(document, ['todomvc']);
+                    });
+                })
+                .catch(function (e) {
+                    console.error(e.stack || e);
                 });
-            });
+<% } %>
         </script>
-        <% } %>
     </body>
 </html>
