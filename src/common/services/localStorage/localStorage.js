@@ -79,5 +79,5 @@ function _saveToLocalStorage(todos) {
 }
 
 angular
-    .module('services.todoStorage.localStorage', [])
-    .service('LocalStorageFactory', LocalStorageFactory);
+    .module('services.localStorage', [])
+    .service('localStorage', LocalStorageFactory);

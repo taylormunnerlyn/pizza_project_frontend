@@ -1,11 +1,11 @@
-import 'common/services/todoStorage/todoStorage';
+import 'common/services/localStorage/localStorage';
 import 'common/directives/todoEscape';
 import 'common/directives/todoFocus';
 
 angular
     .module('todomvc.todo', [
         'ui.router',
-        'services.todoStorage',
+        'services.localStorage',
         'directives.todoEscape',
         'directives.todoFocus'
     ])
@@ -21,21 +21,15 @@ function config($stateProvider) {
                 controllerAs: 'TodoCtrl',
                 templateUrl: 'app/todo/todo.tpl.html'
             }
-        },
-        resolve: {
-            store: function (todoStorage) {
-                return todoStorage.then(function (module) {
-                    module.get();
-                    return module;
-                });
-            }
         }
     });
 }
 
-function TodoController($scope, $stateParams, $filter, store) {
+function TodoController($scope, $stateParams, $filter, localStorage) {
     let vm = this;
-    let todos = vm.todos = store.todos;
+    let todos = vm.todos = localStorage.todos;
+
+    localStorage.get();
 
     vm.newTodo = '';
     vm.editedTodo = null;
@@ -68,7 +62,7 @@ function TodoController($scope, $stateParams, $filter, store) {
         }
 
         vm.saving = true;
-        store
+        localStorage
             .insert(newTodo)
             .then(function () {
                 vm.newTodo = '';
@@ -106,7 +100,7 @@ function TodoController($scope, $stateParams, $filter, store) {
             return;
         }
 
-        store[todo.title ? 'put' : 'delete'](todo)
+        localStorage[todo.title ? 'put' : 'delete'](todo)
             .then(
                 angular.noop,
                 function() {
@@ -126,11 +120,11 @@ function TodoController($scope, $stateParams, $filter, store) {
     };
 
     vm.removeTodo = function (todo) {
-        store.delete(todo);
+        localStorage.delete(todo);
     };
 
     vm.saveTodo = function (todo) {
-        store.put(todo);
+        localStorage.put(todo);
     };
 
     vm.toggleCompleted = function (todo, completed) {
@@ -138,7 +132,7 @@ function TodoController($scope, $stateParams, $filter, store) {
             todo.completed = completed;
         }
 
-        store.put(todo, todos.indexOf(todo))
+        localStorage.put(todo, todos.indexOf(todo))
             .then(
                 angular.noop,
                 function () {
@@ -148,7 +142,7 @@ function TodoController($scope, $stateParams, $filter, store) {
     };
 
     vm.clearCompletedTodos = function () {
-        store.clearCompleted();
+        localStorage.clearCompleted();
     };
 
     vm.markAll = function (completed) {
