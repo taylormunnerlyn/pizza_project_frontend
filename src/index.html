@@ -15,8 +15,8 @@
 
         <!-- compiled JavaScript --><% scripts.forEach(function (file) { %>
         <script type="text/javascript" src="<%= file %>"></script><% }); %>
-        <script>
 <% if (!compile) { %>
+        <script>
             System
                 .import('app/app')
                 .then(function () {
@@ -27,7 +27,7 @@
                 .catch(function (e) {
                     console.error(e.stack || e);
                 });
-<% } %>
         </script>
+<% } %>
     </body>
 </html>
