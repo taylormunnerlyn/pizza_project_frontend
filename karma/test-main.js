@@ -16,7 +16,7 @@ Promise
         })
     )
     .then(function () {
-       __karma__.start();
+        __karma__.start();
     }, function (error) {
         console.error(error.stack || error);
         __karma__.start();
