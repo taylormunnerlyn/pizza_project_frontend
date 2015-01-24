@@ -2,6 +2,7 @@
     'use strict';
 
     var gulp = require('gulp'),
+        gutil = require('gulp-util'),
         historyApiFallback = require('connect-history-api-fallback'),
         rimraf = require('gulp-rimraf'),
         jshint = require('gulp-jshint'),
@@ -102,6 +103,11 @@
             }))
             .pipe(sourcemaps.init())
             .pipe(traceur(config.traceurOptions))
+            .on('error', function(err) {
+                gutil.log(gutil.colors.red(err.message));
+                gutil.beep();
+                this.emit('end');
+            })
             .pipe(sourcemaps.write('./maps'))
             .pipe(gulp.dest(config.buildDir))
             .pipe(connect.reload());
@@ -195,6 +201,11 @@
             .pipe(changed(config.buildDir))
             .pipe(sourcemaps.init())
             .pipe(less())
+            .on('error', function(err) {
+                gutil.log(gutil.colors.red(err.message));
+                gutil.beep();
+                this.emit('end');
+            })
             .pipe(csslint('.csslintrc'))
             .pipe(csslint.reporter(customCssReporter))
             .pipe(notify(function (file) {
