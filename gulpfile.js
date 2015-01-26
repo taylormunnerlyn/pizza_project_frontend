@@ -312,7 +312,7 @@
         assets.push(config.buildDir + '/assets/**');
 
         return gulp.src(assets)
-            .pipe(gulp.dest(config.compileDir));
+            .pipe(gulp.dest(config.compileDir + '/assets'));
     });
 
     /**
