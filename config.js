@@ -6,16 +6,14 @@
         buildDir: 'build',
         compileDir: 'bin',
 
-        traceurOptions: {
-            modules: 'instantiate',
-            script: false,
-            moduleName: true
+        babelOptions: {
+            modules: 'system',
+            moduleIds: true
         },
 
         index: {
             // Define the load order of the scripts in index.html
             scripts: [
-                'vendor/traceur-runtime.js',
                 'vendor/es6-module-loader-sans-promises.src.js',
                 'vendor/system.src.js',
                 'vendor/extension-register.js',
@@ -74,11 +72,10 @@
          */
         vendor: {
             js: [
-                'node_modules/traceur/bin/traceur-runtime.js',
                 'node_modules/es6-module-loader/dist/es6-module-loader-sans-promises.src.js',
                 'node_modules/systemjs/dist/system.src.js',
                 'node_modules/systemjs/lib/extension-register.js',
-                'bower_components/lodash/dist/lodash.js',
+                'bower_components/lodash/lodash.js',
                 'bower_components/todomvc-common/base.js',
                 'bower_components/angular/angular.js',
                 'bower_components/angular-ui-router/release/angular-ui-router.js'

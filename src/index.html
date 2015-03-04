@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html <% if (compile) { %>ng-app="todomvc" <% } %>ng-controller="MainController as MainCtrl">
+<html ng-controller="MainController as MainCtrl">
     <head>
         <title>Todo</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <script>document.write('<base href="' + document.location + '">');</script>
+        <base href="/">
 
         <!-- compiled CSS --><% styles.forEach(function(file) { %>
         <link rel="stylesheet" type="text/css" href="<%= file %>"><% }); %>
@@ -15,8 +15,9 @@
 
         <!-- compiled JavaScript --><% scripts.forEach(function (file) { %>
         <script type="text/javascript" src="<%= file %>"></script><% }); %>
-<% if (!compile) { %>
         <script>
+            System.baseURL = '/';
+            System.transpiler = 'babel';
             System
                 .import('app/app')
                 .then(function () {
@@ -28,6 +29,5 @@
                     console.error(e.stack || e);
                 });
         </script>
-<% } %>
     </body>
 </html>

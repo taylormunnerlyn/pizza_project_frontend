@@ -1,6 +1,7 @@
 const STORAGE_ID = 'todos-angularjs';
 
 class LocalStorageFactory {
+    /* @ngInject */
     constructor($q) {
         this.$q = $q;
         this.todos = [];

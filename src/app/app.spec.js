@@ -18,3 +18,7 @@ describe('testing', function () {
         expect($rootScope).toBeDefined();
     });
 });
+
+export function main () {
+    console.log('asodfijasdoifj');
+}

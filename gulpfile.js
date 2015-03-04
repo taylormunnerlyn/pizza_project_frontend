@@ -26,7 +26,7 @@
         table = require('text-table'),
         logSymbols = require('log-symbols'),
         stringLength = require('string-length'),
-        traceur = require('gulp-traceur'),
+        babel = require('gulp-babel'),
         argv = require('yargs').argv,
         karma = require('karma').server,
         config = require('./config.js'),
@@ -82,10 +82,6 @@
      * Runs ngAnnotate if compiling.
      */
     gulp.task('buildScripts', function () {
-        if (compiling) {
-            config.traceurOptions.modules = 'inline';
-        }
-
         return gulp.src(config.appFiles.js)
             .pipe(changed(config.buildDir))
             .pipe(jshint({
@@ -101,7 +97,7 @@
                     file.jshint.results[0].error.line + '\n';
             }))
             .pipe(sourcemaps.init())
-            .pipe(traceur(config.traceurOptions))
+            .pipe(babel(config.babelOptions))
             .pipe(sourcemaps.write('./maps'))
             .pipe(gulp.dest(config.buildDir))
             .pipe(connect.reload());
@@ -281,7 +277,6 @@
         files.push(config.buildDir + '/' + 'common/**/*.js');
         files.push(config.buildDir + '/' + 'templates.js');
         files.push(config.buildDir + '/' + 'config.js');
-
 
         return gulp.src(files, {}, {nosort: true})
             .pipe(ngAnnotate())

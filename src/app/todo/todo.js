@@ -16,6 +16,7 @@ function config($stateProvider) {
 }
 
 class TodoController {
+    /* @ngInject */
     constructor($scope, $stateParams, $filter, localStorage) {
         this.$scope = $scope;
         this.$stateParams = $stateParams;

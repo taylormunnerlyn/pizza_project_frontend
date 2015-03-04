@@ -19,7 +19,7 @@ Setting this will change the port the development server uses. Much easier than 
 ### `gulp compile`
 This command will first run the build command and then it will take all of the app files and dependencies and concatenate them into one file that will then be minified and annotated with `ngAnnotate` so you don't have to implement minified safe code yourself.
 
-This command will change an option that the code is compiled with when running traceur. It changes the modules option from whatever it is set to in config.js to `inline` which allows the app to actually work with a concatenated file.
+This command will change an option that the code is compiled with when running babel. It changes the modules option from whatever it is set to in config.js to `inline` which allows the app to actually work with a concatenated file.
 
 In `index.html` the script block that bootstraps the app will be removed and replaced with a normal `ng-app` attribute since it's not needed anymore.
 

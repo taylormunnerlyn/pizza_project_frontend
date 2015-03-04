@@ -1,9 +1,10 @@
 (function (module, require) {
     'use strict';
 
-    module.exports = function (config) {
-        var appConfig = require('../config.js');
+    var appConfig = require('../config.js'),
+        babelOptions = appConfig.babelOptions;
 
+    module.exports = function (config) {
         config.set({
             // base path that will be used to resolve all patterns (eg. files,
             // exclude).
@@ -13,7 +14,7 @@
                 'karma-chrome-launcher',
                 'karma-firefox-launcher',
                 'karma-jasmine',
-                'karma-traceur-preprocessor'
+                'karma-babel-preprocessor'
             ],
 
             // frameworks to use
@@ -25,12 +26,10 @@
             files: [
                 {pattern: 'src/**/*.js', included: false},
 
-                'node_modules/traceur/bin/traceur.js',
-                'node_modules/traceur/bin/traceur-runtime.js',
                 'node_modules/es6-module-loader/dist/es6-module-loader-sans-promises.src.js',
                 'node_modules/systemjs/dist/system.src.js',
                 'node_modules/systemjs/lib/extension-register.js',
-                'bower_components/lodash/dist/lodash.js',
+                'bower_components/lodash/lodash.js',
                 'bower_components/todomvc-common/base.js',
                 'bower_components/angular/angular.js',
                 'bower_components/angular-ui-router/release/angular-ui-router.js',
@@ -48,7 +47,7 @@
             //   https://npmjs.org/browse/keyword/karma-preprocessor
             preprocessors: {
                 'src/**/*.tpl.html': ['ng-html2js'],
-                'src/**/*.js': ['traceur']
+                'src/**/*.js': ['babel']
             },
 
             ngHtml2JsPreprocessor: {
@@ -56,12 +55,8 @@
                 moduleName: 'htmlTemplates'
             },
 
-            // For some reason add the moduleName option here will break tests.
-            traceurPreprocessor: {
-                options: {
-                    modules: 'instantiate',
-                    scripts: false
-                }
+            babelPreprocessor: {
+                options: babelOptions
             },
 
             // test results reporter to use
@@ -79,7 +74,7 @@
             // level of logging
             // possible values: config.LOG_DISABLE || config.LOG_ERROR ||
             //   config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-            logLevel: config.LOG_INFO,
+            logLevel: config.LOG_DEBUG,
 
             // enable / disable watching file and executing tests whenever any
             // file changes
