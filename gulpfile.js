@@ -331,11 +331,12 @@
     gulp.task('index', function () {
         var scripts = config.index.scripts;
         var styles = config.index.styles;
+        var cacheBuster = Date.now();
 
         // Override the styles if compiling.
         if (compiling) {
-            scripts = ['app.min.js'];
-            styles = ['main.min.css'];
+            scripts = ['app.min.js' + '?cacheBuster=' + cacheBuster];
+            styles = ['main.min.css' + '?cacheBuster=' + cacheBuster];
         }
 
         return gulp.src(config.appFiles.index)
