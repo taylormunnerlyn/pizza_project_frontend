@@ -4,6 +4,8 @@
     var appConfig = require('../config.js'),
         babelOptions = appConfig.babelOptions;
 
+    babelOptions.moduleIds = false;
+
     module.exports = function (config) {
         config.set({
             // base path that will be used to resolve all patterns (eg. files,
