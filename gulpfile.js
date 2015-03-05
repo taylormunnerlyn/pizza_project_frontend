@@ -27,6 +27,7 @@
         logSymbols = require('log-symbols'),
         stringLength = require('string-length'),
         babel = require('gulp-babel'),
+        cssAutoprefixer = require('gulp-autoprefixer'),
         argv = require('yargs').argv,
         karma = require('karma').server,
         config = require('./config.js'),
@@ -204,6 +205,7 @@
                     ' occurred during CSS linting.'
                 );
             }))
+            .pipe(cssAutoprefixer(config.cssAutoPrefixerOptions))
             .pipe(sourcemaps.write('./maps'))
             .pipe(gulp.dest(config.buildDir))
             .pipe(connect.reload());

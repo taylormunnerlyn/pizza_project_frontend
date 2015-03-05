@@ -11,6 +11,11 @@
             moduleIds: true
         },
 
+        cssAutoPrefixerOptions: {
+            cascade: true,
+            remove: false
+        },
+
         index: {
             // Define the load order of the scripts in index.html
             scripts: [
