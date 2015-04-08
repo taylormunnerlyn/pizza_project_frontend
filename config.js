@@ -26,6 +26,7 @@
                 'vendor/base.js',
                 'vendor/angular.js',
                 'vendor/angular-ui-router.js',
+                'vendor/bootstrap.js',
                 'templates.js',
                 'config.js'
             ],
@@ -42,7 +43,8 @@
             // Grab all .js files in the src/ directory and subdirectories aside
             // from tests and asset .js files.
             js: [
-                'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js'
+                'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js',
+                '!src/bootstrap.js'
             ],
             jsTest: ['src/**/*.spec.js'],
 
@@ -83,7 +85,8 @@
                 'bower_components/lodash/lodash.js',
                 'bower_components/todomvc-common/base.js',
                 'bower_components/angular/angular.js',
-                'bower_components/angular-ui-router/release/angular-ui-router.js'
+                'bower_components/angular-ui-router/release/angular-ui-router.js',
+                'src/bootstrap.js'
             ],
 
             css: [
