@@ -19,6 +19,7 @@
         index: {
             // Define the load order of the scripts in index.html
             scripts: [
+                'vendor/browser-polyfill.js',
                 'vendor/es6-module-loader-sans-promises.src.js',
                 'vendor/system.src.js',
                 'vendor/extension-register.js',
@@ -79,6 +80,7 @@
          */
         vendor: {
             js: [
+                'node_modules/babel-core/browser-polyfill.js',
                 'node_modules/es6-module-loader/dist/es6-module-loader-sans-promises.src.js',
                 'node_modules/systemjs/dist/system.src.js',
                 'node_modules/systemjs/lib/extension-register.js',

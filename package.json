@@ -11,6 +11,7 @@
     "url": "git@dev.izeni.net:jwardle/es6-template.git"
   },
   "dependencies": {
+    "babel-core": "^5.0.12",
     "es6-module-loader": "^0.15.0",
     "systemjs": "^0.15.0"
   },
