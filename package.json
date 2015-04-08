@@ -1,7 +1,7 @@
 {
   "author": "Jesse Wardle",
   "name": "es6-template",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Project template for using ES6 today! Includes an example TodoMVC app using AngularJS as well as working ES6 tests.",
   "bugs": {
     "url": "https://dev.izeni.net/jwardle/es6-template/issues"

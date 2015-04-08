@@ -1,4 +1,4 @@
-# ES6 Template v0.0.2
+# ES6 Template v0.0.3
 
 This project provides a build process for using ES6 code that will be transpiled down to ES5/ES3 compatible code so it can be run in most browsers even if they don't support ES6 yet.
 
