@@ -17,7 +17,7 @@ function config($stateProvider) {
 
 class TodoController {
     /* @ngInject */
-    constructor($scope, $stateParams, $filter, localStorage) {
+    constructor ($scope, $stateParams, $filter, localStorage) {
         this.$scope = $scope;
         this.$stateParams = $stateParams;
         this.$filter = $filter;
@@ -56,13 +56,13 @@ class TodoController {
                     this.statusFilter = {completed: true};
                     break;
                 default:
-                    this.statusFilter = null;
+                    this.statusFilter = {};
                     break;
             }
         });
     }
 
-    addTodo() {
+    addTodo () {
         let newTodo = {
             title: this.newTodo.trim(),
             completed: false
@@ -83,14 +83,14 @@ class TodoController {
             });
     }
 
-    editTodo(todo) {
+    editTodo (todo) {
         this.editedTodo = todo;
 
         // Clone the original todo to restor it on demand.
         this.originalTodo = angular.copy(todo);
     }
 
-    saveEdits(todo, event) {
+    saveEdits (todo, event) {
         // Blur events are automatically triggered after the form submit event.
         // This does some unfortunate logic handling to prevent saving twice.
         if (event === 'blur' && this.saveEvent === 'submit') {
@@ -114,22 +114,22 @@ class TodoController {
             });
     }
 
-    revertEdits(todo) {
+    revertEdits (todo) {
         this.todos[this.todos.indexOf(todo)] = this.originalTodo;
         this.editedTodo = null;
         this.originalTodo = null;
         this.reverted = true;
     }
 
-    removeTodo(todo) {
+    removeTodo (todo) {
         this.localStorage.delete(todo);
     }
 
-    saveTodo(todo) {
+    saveTodo (todo) {
         this.localStorage.put(todo);
     }
 
-    toggleCompleted(todo, completed) {
+    toggleCompleted (todo, completed) {
         if (angular.isDefined(completed)) {
             todo.completed = completed;
         }
@@ -141,11 +141,11 @@ class TodoController {
             });
     }
 
-    clearCompletedTodos() {
+    clearCompletedTodos () {
         this.localStorage.clearCompleted();
     }
 
-    markAll(completed) {
+    markAll (completed) {
         this.todos.forEach((todo) => {
             if (todo.completed !== completed) {
                 this.toggleCompleted(todo, completed);

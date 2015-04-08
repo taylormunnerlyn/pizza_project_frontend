@@ -71,11 +71,11 @@ class LocalStorageFactory {
     }
 }
 
-function _getFromLocalStorage() {
+function _getFromLocalStorage () {
     return JSON.parse(localStorage.getItem(STORAGE_ID) || '[]');
 }
 
-function _saveToLocalStorage(todos) {
+function _saveToLocalStorage (todos) {
     localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
 }
 
