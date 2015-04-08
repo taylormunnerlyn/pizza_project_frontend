@@ -2,15 +2,15 @@ const STORAGE_ID = 'todos-angularjs';
 
 class LocalStorageFactory {
     /* @ngInject */
-    constructor($q) {
+    constructor ($q) {
         this.$q = $q;
         this.todos = [];
     }
 
-    clearCompleted() {
-        let deferred = this.$q.defer();
-        let completeTodos = [];
-        let incompleteTodos = [];
+    clearCompleted () {
+        let deferred = this.$q.defer(),
+            completeTodos = [],
+            incompleteTodos = [];
 
         this.todos.forEach(todo => {
             if (todo.completed) {
@@ -28,7 +28,7 @@ class LocalStorageFactory {
         return deferred.promise;
     }
 
-    delete(todo) {
+    delete (todo) {
         let deferred = this.$q.defer();
 
         this.todos.splice(this.todos.indexOf(todo, 1));
@@ -39,7 +39,7 @@ class LocalStorageFactory {
         return deferred.promise;
     }
 
-    get() {
+    get () {
         let deferred = this.$q.defer();
 
         angular.copy(_getFromLocalStorage(), this.todos);
@@ -48,7 +48,7 @@ class LocalStorageFactory {
         return deferred.promise;
     }
 
-    insert(todo) {
+    insert (todo) {
         let deferred = this.$q.defer();
 
         this.todos.push(todo);
@@ -59,7 +59,7 @@ class LocalStorageFactory {
         return deferred.promise;
     }
 
-    put(todo, index) {
+    put (todo, index) {
         let deferred = this.$q.defer();
 
         this.todos[index] = todo;

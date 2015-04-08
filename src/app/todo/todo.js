@@ -37,9 +37,7 @@ class TodoController {
         this.allChecked = false;
         this.completedCount = 0;
 
-        $scope.$watch(() => {
-            return this.todos;
-        }, () => {
+        $scope.$watch(() => this.todos, () => {
             this.remainingCount = $filter('filter')(
                 this.todos, {completed: false}
             ).length;

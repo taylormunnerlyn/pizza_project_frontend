@@ -12,6 +12,6 @@ class TodoEscapeDirective {
 
 angular
     .module('directives.todoEscape', [])
-    .directive('todoEscape', function () {
+    .directive('todoEscape', () => {
         return new TodoEscapeDirective();
     });

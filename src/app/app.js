@@ -1,5 +1,20 @@
 import 'app/todo/todo';
 
+function config ($urlRouterProvider, $locationProvider) {
+    $urlRouterProvider.otherwise('/');
+
+    $locationProvider.html5Mode(true);
+}
+
+class MainController {
+    constructor () {
+        this.whatIDo = 'anything';
+        this.message = `I don't to ${this.whatIDo}.`;
+
+        console.log(this.message);
+    }
+}
+
 angular
     .module('todomvc', [
         'htmlTemplates',
@@ -8,17 +23,3 @@ angular
     ])
     .config(config)
     .controller('MainController', MainController);
-
-function config ($urlRouterProvider, $locationProvider) {
-    $urlRouterProvider.otherwise('/');
-
-    $locationProvider.html5Mode(true);
-}
-
-function MainController() {
-    var vm = this;
-
-    vm.message = 'I don\'t do anything';
-
-    console.log(vm.message);
-}
