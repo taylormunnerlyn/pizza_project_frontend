@@ -7,9 +7,10 @@ function config ($urlRouterProvider, $locationProvider) {
 }
 
 class MainController {
+    /* @ngInject */
     constructor () {
         this.whatIDo = 'anything';
-        this.message = `I don't to ${this.whatIDo}.`;
+        this.message = `I don't do ${this.whatIDo}.`;
 
         console.log(this.message);
     }
