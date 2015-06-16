@@ -1,18 +1,10 @@
-body {
-  padding-left: 10px;
-  background: #eaeaea url('/vendor/bg.png');
-}
+@import '../../bower_components/bootstrap/less/bootstrap.less';
+@import 'colors.less';
+@import 'defaults.less';
+@import 'mixins.less';
+@import 'typography.less';
 
-h2 {
-  color: blue;
-}
+/* Using BEM for CSS structure - https://css-tricks.com/bem-101/ */
+@import '../app/login/login.less';
 
-.unstyled {
-  list-style: none;
-  padding-left: 0;
-}
-
-.done-true {
-  color: gray;
-  text-decoration: line-through;
-}
+@import 'responsive.less';

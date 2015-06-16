@@ -86,7 +86,7 @@
     "globals"       : {         // additional predefined global variables
         "angular": false,
         "inject": false,
-        "_": false,
-        "Chart": false
+        "System": false,
+        "_": false
     }
 }

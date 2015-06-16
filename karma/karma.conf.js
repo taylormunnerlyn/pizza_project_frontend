@@ -33,7 +33,6 @@
                 'node_modules/systemjs/dist/system.src.js',
                 'node_modules/systemjs/lib/extension-register.js',
                 'bower_components/lodash/lodash.js',
-                'bower_components/todomvc-common/base.js',
                 'bower_components/angular/angular.js',
                 'bower_components/angular-ui-router/release/angular-ui-router.js',
                 'bower_components/angular-mocks/angular-mocks.js',

@@ -1,26 +1,27 @@
-import 'app/todo/todo';
+import 'app/home/home';
+import 'app/login/login';
 
-function config ($urlRouterProvider, $locationProvider) {
+function config ($urlRouterProvider, $locationProvider, $stateProvider) {
     $urlRouterProvider.otherwise('/');
-
     $locationProvider.html5Mode(true);
+    $stateProvider.state('PROJECT_NAME', {
+        url: '/',
+        abstract: true
+    });
 }
 
 class MainController {
-    /* @ngInject */
     constructor () {
-        this.whatIDo = 'anything';
-        this.message = `I don't do ${this.whatIDo}.`;
 
-        console.log(this.message);
     }
 }
 
 angular
-    .module('todomvc', [
+    .module('PROJECT_NAME', [
         'htmlTemplates',
         'ui.router',
-        'todomvc.todo'
+        'PROJECT_NAME.home',
+        'PROJECT_NAME.login',
     ])
     .config(config)
     .controller('MainController', MainController);

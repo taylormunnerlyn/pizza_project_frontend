@@ -1,5 +1,5 @@
 {
     "config": {
-        "apiUrl": "//127.0.0.1/api/"
+        "apiHost": "http://localhost:8000"
     }
 }

@@ -4,7 +4,7 @@ System
     .import('app/app')
     .then(function () {
         angular.element(document).ready(function () {
-            angular.bootstrap(document, ['todomvc']);
+            angular.bootstrap(document, ['PROJECT_NAME']);
         });
     })
     .catch(function (e) {

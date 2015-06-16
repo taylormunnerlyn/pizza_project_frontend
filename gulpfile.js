@@ -3,7 +3,11 @@
 
     var gulp = require('gulp'),
         historyApiFallback = require('connect-history-api-fallback'),
-        rimraf = require('gulp-rimraf'),
+        watch = require('gulp-watch'),
+        gutil = require('gulp-util'),
+        del = require('del'),
+        vinylPaths = require('vinyl-paths'),
+        through = require('through2'),
         jshint = require('gulp-jshint'),
         concat = require('gulp-concat'),
         uglify = require('gulp-uglify'),
@@ -31,23 +35,27 @@
         argv = require('yargs').argv,
         karma = require('karma').server,
         config = require('./config.js'),
+        computed = require('./src/config/computed.js'),
         env = process.env.NODE_ENV || 'dev',
         compiling = process.argv.indexOf('compile') !== -1;
 
     /**
-     * Start the development server on port 9000. Runs from the `bin/` folder if
+     * Start the development server on port 4200. Runs from the `bin/` folder if
      * it exists.
      */
     gulp.task('connect', function () {
+        var port = parseInt(argv.port) || 4200;
         connect.server({
             root: ['bin', 'build'],
-            port: parseInt(argv.port) || 8000,
+            port: port,
             livereload: true,
 
             middleware: function () {
                 return [historyApiFallback];
             }
         });
+        gulp.src(config.appFiles.index)
+            .pipe(notify('Server running on http://localhost:' + port));
     });
 
     /**
@@ -74,7 +82,7 @@
      */
     gulp.task('clean', function () {
         return gulp.src([config.buildDir, config.compileDir], {read: false})
-            .pipe(rimraf());
+            .pipe(vinylPaths(del));
     });
 
     /**
@@ -89,16 +97,9 @@
                 debug: true
             }))
             .pipe(jshint.reporter('jshint-stylish'))
-            .pipe(notify(function (file) {
-                if (file.jshint.success) {
-                    return false;
-                }
-
-                return file.relative + ' line ' +
-                    file.jshint.results[0].error.line + '\n';
-            }))
             .pipe(sourcemaps.init())
             .pipe(babel(config.babelOptions))
+            .on('error', notify.onError('JS Error: <%= error.message %>'))
             .pipe(sourcemaps.write('./maps'))
             .pipe(gulp.dest(config.buildDir))
             .pipe(connect.reload());
@@ -127,7 +128,7 @@
             }
 
             // Log out the file path.
-            console.log(
+            gutil.log(
                 '\n' +
                 chalk.underline(file.path)
             );
@@ -184,27 +185,17 @@
             }
 
             // Log out the error message and count tables.
-            console.log(msgTable);
-            console.log('\n' + table(countTable));
+            gutil.log(msgTable);
+            gutil.log('\n' + table(countTable));
         };
 
         return gulp.src(config.appFiles.less)
             .pipe(changed(config.buildDir))
             .pipe(sourcemaps.init())
             .pipe(less())
+            .on('error', notify.onError('LESS Error: <%= error.message %>'))
             .pipe(csslint('.csslintrc'))
             .pipe(csslint.reporter(customCssReporter))
-            .pipe(notify(function (file) {
-                if (file.csslint.success) {
-                    return false;
-                }
-
-                return (
-                    file.csslint.errorCount + ' error' +
-                    (file.csslint.errorCount > 1 ? 's' : '') +
-                    ' occurred during CSS linting.'
-                );
-            }))
             .pipe(cssAutoprefixer(config.cssAutoPrefixerOptions))
             .pipe(sourcemaps.write('./maps'))
             .pipe(gulp.dest(config.buildDir))
@@ -234,7 +225,8 @@
      */
     gulp.task('buildAssets', function () {
         return gulp.src(config.appFiles.assets)
-            .pipe(gulp.dest(config.buildDir + '/assets'));
+            .pipe(gulp.dest(config.buildDir + '/assets'))
+            .pipe(connect.reload());
     });
 
     /**
@@ -317,13 +309,38 @@
      */
     gulp.task('config', function () {
         gulp.src('src/config/' + env + '.json')
+            .pipe(through.obj(function (file, enc, cb) {
+                try {
+                    var config = JSON.parse(file.contents).config;
+                    file.contents = new Buffer(
+                        JSON.stringify({config: computed(config)})
+                    );
+                    cb(null, file);
+                } catch (err) {
+                    cb(new gutil.PluginError(
+                        'config',
+                        'Error computing config',
+                        {showStack: true}
+                    ), file);
+                }
+            }))
             .pipe(ngConstant({
                 name: 'config'
             }))
             .pipe(rename({
                 basename: 'config'
             }))
-            .pipe(gulp.dest(config.buildDir));
+            .pipe(gulp.dest(config.buildDir))
+            .pipe(connect.reload());
+    });
+
+    gulp.task('rootFiles', function () {
+        return gulp.src(config.rootFiles)
+            .pipe(gulpif(
+                compiling,
+                gulp.dest(config.compileDir),
+                gulp.dest(config.buildDir)
+            ));
     });
 
     /**
@@ -362,15 +379,31 @@
      * when a change does occur.
      */
     gulp.task('watch', function () {
-        gulp.watch(config.appFiles.delta.js, ['buildScripts']);
-        gulp.watch(config.appFiles.tpl, ['buildHtml']);
-        gulp.watch(config.appFiles.delta.less, ['buildStyles']);
-        gulp.watch(config.appFiles.index, ['index']);
+        watch(config.appFiles.delta.js, function () {
+            gulp.start(['buildScripts']);
+        });
+        watch(config.appFiles.tpl, function () {
+            gulp.start(['buildHtml']);
+        });
+        watch(config.appFiles.delta.less, function () {
+            gulp.start(['buildStyles']);
+        });
+        watch(config.appFiles.index, function () {
+            gulp.start(['index']);
+        });
+        watch(config.appFiles.assets, function () {
+            gulp.start(['buildAssets']);
+        });
+        watch(['src/config/*', './config.js'], function () {
+            config = require('./config.js');
+            computed = require('./src/config/computed.js');
+            gulp.start(['buildApp', 'index']);
+        });
     });
 
     gulp.task('buildApp', [
         'buildScripts', 'buildStyles', 'buildHtml', 'buildAssets', 'config',
-        'buildVendorScripts', 'buildVendorCss', 'buildVendorAssets'
+        'buildVendorScripts', 'buildVendorCss', 'buildVendorAssets', 'rootFiles'
     ]);
 
     gulp.task('compileApp', [

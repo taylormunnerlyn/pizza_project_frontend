@@ -1,5 +1,5 @@
 {
     "config": {
-      "apiUrl": "//example.com/api/"
+        "apiHost": "http://example.com"
     }
 }
