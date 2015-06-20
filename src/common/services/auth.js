@@ -6,8 +6,8 @@ function authRun (auth, $rootScope, $state) {
     // Listen for state change errors.
     $rootScope.$on('$stateChangeError', stateChangeError);
 
-    function stateChangeError (e, toState, toParams, fromState, fromParams,
-                               error) {
+    function stateChangeError (e, toState, toParams, fromState,
+                               fromParams, error) {
         // Check if it was an authentication error.
         if (error && error.auth) {
             if(e) {
@@ -18,6 +18,8 @@ function authRun (auth, $rootScope, $state) {
                 redirectState: toState.name,
                 redirectParams: toParams
             }, {location: 'replace'});
+        } else {
+            console.error(error);
         }
     }
 }

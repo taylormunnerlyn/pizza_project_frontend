@@ -25,8 +25,8 @@ function UserFactory (DS, DSHttpAdapter, config, $http) {
             fullName: ['first_name', 'last_name', (f, l) => f + ' ' + l],
             imageUrl: ['image', image => {
                 return image ?
-                    (image.startsWith('http') ? '' : config.backendUrl) + image:
-                    config.backendUrl + '/static/img/placeholder_profile.jpg';
+                    (image.startsWith('http') ? '' : config.baseUrl) + image:
+                    config.baseUrl + '/static/img/placeholder_profile.jpg';
             }]
         }
     });

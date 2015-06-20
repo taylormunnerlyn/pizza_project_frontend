@@ -26,14 +26,13 @@ function errorInterceptor ($q) {
         }
         let msg = '';
         if(obj instanceof Array) {
-            obj.forEach(item => {
-                msg += formErrorMessage(item);
-            });
+            msg += obj.map(item => formErrorMessage(item)).join(', ');
         } else {
             _.forOwn(obj, (val, key) => {
-                msg += key + ': ';
-                msg += val instanceof Array ? val.join(', ') : val;
-                msg += '\n';
+                if(['non_field_errors', 'detail'].indexOf(key) < 0) {
+                    msg += key + ': ';
+                }
+                msg += formErrorMessage(val) + '\n';
             });
         }
         return msg;
@@ -51,14 +50,22 @@ function errorInterceptor ($q) {
 }
 
 function apiRun (DS, DSHttpAdapter, $q) {
-    DS.findAllPaginated = function (model, params={}) {
+    let fetched = {};
+    DS.findAllPaged = DS.findAllPaginated = function (model, params, opts) {
         let deferred = $q.defer(),
             url = DS.defaults.basePath + DS.definitions[model].endpoint,
             result = [],
             promise = deferred.promise;
         promise.$object = result;
+        params = params && typeof params === 'object' ? params : {};
 
-        handlePagination();
+        if(fetched[model] && (!opts || opts.cache)) {
+            let objects = DS.getAll(model);
+            Array.prototype.push.apply(result, objects);
+            deferred.resolve(result);
+        } else {
+            handlePagination();
+        }
 
         function handlePagination (page=1) {
             params.page = page;
@@ -74,12 +81,34 @@ function apiRun (DS, DSHttpAdapter, $q) {
                 if(res.data.next) {
                     handlePagination(++page);
                 } else {
+                    fetched[model] = true;
                     deferred.resolve(result);
                 }
             }, deferred.reject);
         }
 
         return promise;
+    };
+
+    var findAll = DS.findAll.bind(DS);
+    DS.findAll = function (...args) {
+        let deferred = $q.defer(),
+            promise = deferred.promise,
+            result = [];
+        promise.$object = result;
+
+        findAll(...args).then(objects => {
+            Array.prototype.push.apply(result, objects);
+            deferred.resolve(result);
+        }, deferred.reject);
+
+        return deferred.promise;
+    };
+
+    DS.fetchAll = function (model, ids) {
+        return $q.all(
+            ids.map(id => DS.find(model, id))
+        );
     };
 
     DS.action = function (model, id, action) {

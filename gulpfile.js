@@ -395,7 +395,9 @@
             gulp.start(['buildAssets']);
         });
         watch(['src/config/*', './config.js'], function () {
+            delete require.cache[require.resolve('./config.js')];
             config = require('./config.js');
+            delete require.cache[require.resolve('./src/config/computed.js')];
             computed = require('./src/config/computed.js');
             gulp.start(['buildApp', 'index']);
         });
