@@ -55,11 +55,19 @@ class AuthService {
     }
 
     onLogin () {
+
     }
 
     onLogout () {
         this.$rootScope.$evalAsync(() => {
             this.$state.go('PROJECT_NAME.login');
+        });
+    }
+
+    changePassword (token) {
+        let pass = prompt('Change Password');
+        return this.User.changePassword(token, pass, pass).catch(err => {
+            alert(err.error);
         });
     }
 
@@ -74,7 +82,9 @@ class AuthService {
                 return user;
             }, err => {
                 this._clearAuth();
-                debugger;
+                if(err.data.detail === 'Invalid token.') {
+                    this.$state.go('PROJECT_NAME.login');
+                }
                 deferred.reject(err);
             });
         } else {
@@ -84,7 +94,6 @@ class AuthService {
                 this.onLogin();
                 deferred.resolve(this.user);
             } else {
-                console.log(userId);
                 deferred.reject('No userId given');
             }
         }
@@ -101,8 +110,7 @@ class AuthService {
      * @returns {promise}
      */
     resetPassword (email=this.user.email) {
-        return this.$http
-            .post(this.config.backendUrl + '/reset-password/' + email + '/');
+        return this.$http.post(this.config.resetPassword + email + '/');
     }
 
     /**
@@ -178,9 +186,16 @@ class AuthService {
      */
     logout () {
         this._clearAuth();
-        this.request = null;
+        let deferred = this.$q.defer();
+        deferred.reject();
+        this.request = deferred.promise;
+        this.User.eject(this.user.id);
         this.user = null;
         this.onLogout();
+    }
+
+    verify (token) {
+        return this.$http.post(this.config.emailVerify + token + '/');
     }
 
     /**
@@ -226,8 +241,8 @@ angular
     .module('services.auth', [
         'config',
         'ngCookies',
-        'ui.router',
         'models.User'
     ])
     .run(authRun)
     .service('auth', AuthService);
+

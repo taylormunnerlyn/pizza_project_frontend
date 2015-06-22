@@ -22,8 +22,11 @@ class LoginController {
 
     reset () {
         if(this.username) {
-            this.User.resetPassword(this.username).then(() => {
+            this.auth.resetPassword(this.username).then(() => {
+                this.error = null;
                 alert('Password Reset Email Sent');
+            }, err => {
+                this.error = err.error;
             });
         }
     }

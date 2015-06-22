@@ -16,6 +16,19 @@ function apiConfig (DSProvider, DSHttpAdapterProvider, $httpProvider, config) {
         return data;
     };
 
+    DSProvider.defaults.methods = {
+        patch: function (attrs, opts={}) {
+            opts.method = 'PATCH';
+            return this.DSUpdate(attrs, opts);
+        },
+        debouncedUpdate: _.debounce(function () {
+            let changes = this.DSChanges().changed;
+            if(Object.keys(changes).length) {
+                this.patch(changes);
+            }
+        }, 500)
+    };
+
     $httpProvider.interceptors.push('errorInterceptor');
 }
 
@@ -104,6 +117,8 @@ function apiRun (DS, DSHttpAdapter, $q) {
 
         return deferred.promise;
     };
+
+    DS.getMasterArray = model => DS.s[model].collection;
 
     DS.fetchAll = function (model, ids) {
         return $q.all(

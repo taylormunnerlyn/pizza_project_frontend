@@ -1,6 +1,6 @@
 import 'common/api';
 
-function UserFactory (DS, DSHttpAdapter, config, $http) {
+function UserFactory (DS, config, $http) {
     let User = DS.defineResource({
         name: 'User',
         endpoint: 'users',
@@ -31,9 +31,12 @@ function UserFactory (DS, DSHttpAdapter, config, $http) {
         }
     });
 
-    User.resetPassword = email => (
-        DSHttpAdapter.POST(`${config.apiUrl}users/reset-password/${email}/`)
-    );
+    User.changePassword = function (token, pass1, pass2) {
+        return $http.post(config.changePassword + token + '/', {
+            password: pass1,
+            verify_password: pass2
+        });
+    };
 
     return User;
 }
