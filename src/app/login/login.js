@@ -45,6 +45,14 @@ function config ($stateProvider) {
                 controllerAs: 'LoginCtrl',
                 templateUrl: 'app/login/login.tpl.html'
             }
+        },
+        resolve: {
+            user: auth => auth.resolveUser().catch(() => {})
+        },
+        onEnter: ($state, user) => {
+            if(user) {
+                $state.go('PROJECT_NAME.home');
+            }
         }
     });
     $stateProvider.state('PROJECT_NAME.logout', {

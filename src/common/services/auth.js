@@ -189,8 +189,10 @@ class AuthService {
         let deferred = this.$q.defer();
         deferred.reject();
         this.request = deferred.promise;
-        this.User.eject(this.user.id);
-        this.user = null;
+        if(this.user) {
+            this.User.eject(this.user.id);
+            this.user = null;
+        }
         this.onLogout();
     }
 

@@ -40,11 +40,11 @@
         compiling = process.argv.indexOf('compile') !== -1;
 
     /**
-     * Start the development server on port 4200. Runs from the `bin/` folder if
+     * Start the development server on port 9000. Runs from the `bin/` folder if
      * it exists.
      */
     gulp.task('connect', function () {
-        var port = parseInt(argv.port) || 4200;
+        var port = parseInt(argv.port) || 9000;
         connect.server({
             root: ['bin', 'build'],
             port: port,
