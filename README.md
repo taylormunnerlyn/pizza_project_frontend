@@ -11,6 +11,25 @@ Also, js-data has been modified to play nice with DRF. It handles the deserializ
 Lastly, a $http response interceptor has been defined which will attempt to parse DRF error responses and create a human readable string, which is attached to the promise rejection as `rejection.error`.
 (e.g. `User.patch(changes).catch(err => alert(err.error));`)
 
+## Quick Setup
+Set your project name as an environment variable
+```bash
+PROJECT_NAME=[your project name here]
+```
+And run the following commands:
+```bash
+git clone git@dev.izeni.net:izeni/izeni-angular-template.git
+mv izeni-angular-template $PROJECT_NAME
+cd $PROJECT_NAME
+find . -type f -print0 | xargs -0 sed -i "s/PROJECT_NAME/$PROJECT_NAME/g"
+npm install && bower install
+gulp build
+```
+And don't forget to change the git origin to match your project's:
+```bash
+git remote set-url origin [your project's clone url]
+```
+
 ## Commands
 
 ### `gulp build`
