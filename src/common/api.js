@@ -64,6 +64,26 @@ function errorInterceptor ($q) {
 
 function apiRun (DS, DSHttpAdapter, $q) {
     let fetched = {};
+
+    function handlePagination (paging, page=1) {
+        paging.params.page = page;
+        DSHttpAdapter.GET(paging.url, {params: paging.params}).then(res => {
+            let objects = DS.inject(paging.model, res.data.results);
+            Array.prototype.push.apply(paging.result, objects);
+            paging.deferred.notify({
+                result: paging.result,
+                page: objects,
+                progress: paging.result.length / res.data.count
+            });
+
+            if(res.data.next) {
+                handlePagination(paging, ++page);
+            } else {
+                paging.deferred.resolve(paging.result);
+            }
+        }, paging.deferred.reject);
+    }
+
     DS.findAllPaged = DS.findAllPaginated = function (model, params, opts) {
         let deferred = $q.defer(),
             url = DS.defaults.basePath + DS.definitions[model].endpoint,
@@ -76,31 +96,19 @@ function apiRun (DS, DSHttpAdapter, $q) {
             let objects = DS.getAll(model);
             Array.prototype.push.apply(result, objects);
             deferred.resolve(result);
-        } else {
-            handlePagination();
+            return promise;
         }
-
-        function handlePagination (page=1) {
-            params.page = page;
-            DSHttpAdapter.GET(url, {params: params}).then(res => {
-                let objects = DS.inject(model, res.data.results);
-                Array.prototype.push.apply(result, objects);
-                deferred.notify({
-                    result: result,
-                    page: objects,
-                    progress: result.length / res.data.count
-                });
-
-                if(res.data.next) {
-                    handlePagination(++page);
-                } else {
-                    fetched[model] = true;
-                    deferred.resolve(result);
-                }
-            }, deferred.reject);
-        }
-
-        return promise;
+        handlePagination({
+            model: model,
+            url: url,
+            result: result,
+            deferred: deferred,
+            params: params
+        });
+        return promise.then(res => {
+            fetched[model] = true;
+            return res;
+        });
     };
 
     var findAll = DS.findAll.bind(DS);
@@ -145,6 +153,18 @@ function apiRun (DS, DSHttpAdapter, $q) {
         url += '/' + list;
         return {
             get: params => DSHttpAdapter.GET(url, {params: params}),
+            getPaged: params => {
+                let deferred = $q.defer(),
+                    result = [];
+                handlePagination({
+                    model: model,
+                    url: url,
+                    result: result,
+                    deferred: deferred,
+                    params: params
+                });
+                return deferred.promise;
+            },
             post: (payload, params) => DSHttpAdapter.POST(url, payload, {
                 params: params
             }),
