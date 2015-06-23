@@ -1,14 +1,14 @@
 {
-  "author": "Jesse Wardle",
-  "name": "es6-template",
-  "version": "0.0.3",
+  "author": "Trey Nelson",
+  "name": "izeni-angular-template",
+  "version": "0.1.0",
   "description": "Project template for using ES6 today! Includes working ES6 tests.",
   "bugs": {
-    "url": "https://dev.izeni.net/jwardle/es6-template/issues"
+    "url": "https://dev.izeni.net/izeni/izeni-angular-template/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@dev.izeni.net:jwardle/es6-template.git"
+    "url": "git@dev.izeni.net:izeni/izeni-angular-template.git"
   },
   "dependencies": {
     "babel-core": "^5.5.8",

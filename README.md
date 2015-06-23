@@ -1,8 +1,15 @@
-# ES6 Template v0.0.3
+# Izeni Angular Template v0.1.0
 
 This project provides a build process for using ES6 code that will be transpiled down to ES5/ES3 compatible code so it can be run in most browsers even if they don't support ES6 yet.
 
 The build process is set up to use the SystemJS module loader during development, when compiled to production the code is concatenated and minified into one file and removes the need for SystemJS to be included. Once ES6 and HTTP/2.0 have better support in browsers the need for concatenated and minified files should go away. Until then this concatenated code is here to stay.
+
+The project also contains several pre-built features: an Auth service (cookie based), js-data, a User model, and home / login states.
+
+Also, js-data has been modified to play nice with DRF. It handles the deserialization of responses that contain paginated meta data. Additional resource methods have been defined such as `findAllPaged`, `getMasterArray`, `fetchAll`, `action`, and `list`. Two instance methods have been added as `patch` and `debouncedUpdate`. View `src/common/api.js` to inspect their implementation details.
+
+Lastly, a $http response interceptor has been defined which will attempt to parse DRF error responses and create a human readable string, which is attached to the promise rejection as `rejection.error`.
+(e.g. `User.patch(changes).catch(err => alert(err.error));`)
 
 ## Commands
 
