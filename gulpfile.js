@@ -93,9 +93,7 @@
     gulp.task('buildScripts', function () {
         return gulp.src(config.appFiles.js)
             .pipe(changed(config.buildDir))
-            .pipe(jshint({
-                debug: true
-            }))
+            .pipe(jshint())
             .pipe(jshint.reporter('jshint-stylish'))
             .pipe(sourcemaps.init())
             .pipe(babel(config.babelOptions))
