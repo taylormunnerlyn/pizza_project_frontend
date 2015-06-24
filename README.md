@@ -1,10 +1,21 @@
-# Izeni Angular Template v0.1.0
+# This is just the build system. The Izeni Angular Template can be found [here](https://dev.izeni.net/izeni/izeni-angular-template)
+
+The Izeni Angular Template includes niceties such as an Auth service, User model, and home and login/logout states.
+
+To upgrade a project which has been based off the Izeni-Angular-Template, simple add this repository as an additional remote, and merge the latest changes:
+```bash
+git remote add es6 git@dev.izeni.net:tnelson/es6-template.git
+git fetch es6
+git cherry-pick abb47975..es6/master
+git remote remove es6
+```
+The commit hash `abb47975` is the first stable commit. If you have used a more recent version, you may have to use a newer commit hash.
+
+# ES6 Build System v0.1.0
 
 This project provides a build process for using ES6 code that will be transpiled down to ES5/ES3 compatible code so it can be run in most browsers even if they don't support ES6 yet.
 
 The build process is set up to use the SystemJS module loader during development, when compiled to production the code is concatenated and minified into one file and removes the need for SystemJS to be included. Once ES6 and HTTP/2.0 have better support in browsers the need for concatenated and minified files should go away. Until then this concatenated code is here to stay.
-
-The project also contains several pre-built features: an Auth service (cookie based), js-data, a User model, and home / login states.
 
 Also, js-data has been modified to play nice with DRF. It handles the deserialization of responses that contain paginated meta data. Additional resource methods have been defined such as `findAllPaged`, `getMasterArray`, `fetchAll`, `action`, and `list`. Two instance methods have been added as `patch` and `debouncedUpdate`. View `src/common/api.js` to inspect their implementation details.
 
@@ -18,7 +29,7 @@ PROJECT_NAME=[your project name here]
 ```
 And run the following commands:
 ```bash
-git clone git@dev.izeni.net:izeni/izeni-angular-template.git
+git clone git@dev.izeni.net:tnelson/es6-template.git
 mv izeni-angular-template $PROJECT_NAME
 cd $PROJECT_NAME
 find . -type f -print0 | xargs -0 sed -i "s/PROJECT_NAME/$PROJECT_NAME/g"
