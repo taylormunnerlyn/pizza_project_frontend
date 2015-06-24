@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "lodash": "~3.9.3",
-    "angular": "~1.4.0",
+    "angular": "~1.4.1",
     "angular-cookies": "~1.4.0",
     "js-data": "~1.8.0",
     "js-data-angular": "~2.4.0",
