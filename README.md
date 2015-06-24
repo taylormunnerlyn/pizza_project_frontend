@@ -6,10 +6,10 @@ To upgrade a project which has been based off the Izeni-Angular-Template, simple
 ```bash
 git remote add es6 git@dev.izeni.net:tnelson/es6-template.git
 git fetch es6
-git cherry-pick abb47975..es6/master
+git cherry-pick 93866472..es6/master
 git remote remove es6
 ```
-The commit hash `abb47975` is the first stable commit. If you have used a more recent version, you may have to use a newer commit hash.
+The commit hash `93866472` is the first stable commit. If you have used a more recent version, you may have to use a newer commit hash.
 
 # ES6 Build System v0.1.0
 
