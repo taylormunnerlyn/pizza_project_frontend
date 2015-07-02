@@ -44,18 +44,19 @@
      * it exists.
      */
     gulp.task('connect', function () {
-        var port = parseInt(argv.port) || 9000;
+        var port = parseInt(argv.port) || 9000,
+            host = argv.host || 'localhost';
         connect.server({
             root: ['bin', 'build'],
             port: port,
             livereload: true,
-
+            host: host,
             middleware: function () {
                 return [historyApiFallback];
             }
         });
         gulp.src(config.appFiles.index)
-            .pipe(notify('Server running on http://localhost:' + port));
+            .pipe(notify('Server running on http://' + host + ':' + port));
     });
 
     /**
@@ -310,6 +311,7 @@
             .pipe(through.obj(function (file, enc, cb) {
                 try {
                     var config = JSON.parse(file.contents).config;
+                    config.env = env;
                     file.contents = new Buffer(
                         JSON.stringify({config: computed(config)})
                     );
