@@ -92,7 +92,7 @@ function apiRun (DS, DSHttpAdapter, $q) {
         promise.$object = result;
         params = params && typeof params === 'object' ? params : {};
 
-        if(fetched[model] && (!opts || opts.cache)) {
+        if(fetched[model] && (!opts || !opts.bypassCache)) {
             let objects = DS.getAll(model);
             Array.prototype.push.apply(result, objects);
             deferred.resolve(result);
