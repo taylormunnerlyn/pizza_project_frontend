@@ -148,6 +148,10 @@ function apiRun (DS, DSHttpAdapter, $q) {
         };
     };
 
+    DS.defaults.methods.detail = function (action) {
+        return DS.action(this.constructor.name, this.id, action);
+    };
+
     DS.list = function (model, list) {
         let url = DS.defaults.basePath + DS.definitions[model].endpoint;
         url += '/' + list;
