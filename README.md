@@ -30,6 +30,9 @@ And don't forget to change the git origin to match your project's:
 git remote set-url origin [your project's clone url]
 ```
 
+## Updating a project based off the template
+Most changes to this template stem from changes to the build system, found [here](https://dev.izeni.net/tnelson/es6-template). Follow the update instructions there, or mirror them with this repository if the updates are not build system specific.
+
 ## Commands
 
 ### `gulp build`
