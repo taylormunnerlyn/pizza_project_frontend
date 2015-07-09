@@ -206,6 +206,19 @@ function apiRun (DS, DSHttpAdapter, $q) {
         return DS.patch(this.constructor.name, this.id, attrs, opts);
     };
 
+    DS.defaults.methods.detail = function (action) {
+        return DS.action(this.constructor.name, this.id, action);
+    };
+
+    DS.patch = function (model, id, attrs, opts={}) {
+        opts.method = 'PATCH';
+        return DS.update(model, id, attrs, opts);
+    };
+
+    DS.defaults.methods.DSPatch = function (attrs, opts) {
+        return DS.patch(this.constructor.name, this.id, attrs, opts);
+    };
+
     DS.list = function (model, list) {
         let url = DS.defaults.basePath + DS.definitions[model].endpoint;
         url += '/' + list;
