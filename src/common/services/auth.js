@@ -25,7 +25,7 @@ function authRun (auth, $rootScope, $state) {
 }
 
 class AuthService {
-    constructor ($http, $q, $rootScope, $cookies, $state, config, User) {
+    constructor ($http, $q, $rootScope, $cookies, $state, config, User, DS) {
         this.$http = $http;
         this.$q = $q;
         this.$rootScope = $rootScope;
@@ -33,6 +33,7 @@ class AuthService {
         this.$state = $state;
         this.config = config;
         this.User = User;
+        this.DS = DS;
     }
 
     /**
@@ -190,7 +191,7 @@ class AuthService {
         deferred.reject();
         this.request = deferred.promise;
         if(this.user) {
-            this.User.eject(this.user.id);
+            this.DS.clear();
             this.user = null;
         }
         this.onLogout();
