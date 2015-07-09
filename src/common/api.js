@@ -17,10 +17,6 @@ function apiConfig (DSProvider, DSHttpAdapterProvider, $httpProvider, config) {
     };
 
     DSProvider.defaults.methods = {
-        patch: function (attrs, opts={}) {
-            opts.method = 'PATCH';
-            return this.DSUpdate(attrs, opts);
-        },
         debouncedUpdate: _.debounce(function () {
             let changes = this.DSChanges().changed;
             if(Object.keys(changes).length) {
@@ -51,9 +47,18 @@ function errorInterceptor ($q) {
         return msg;
     }
     function handleError (err) {
-        err.error = err.status === 500 ?
-            'Server Error' :
-            formErrorMessage(err.data);
+        let error;
+        switch(err.status) {
+            case 500:
+                error = 'Server Error';
+                break;
+            case 0:
+                error = 'Unable to connect';
+                break;
+            default:
+                error = formErrorMessage(err.data);
+        }
+        err.error = error;
         return $q.reject(err);
     }
     return {
@@ -126,6 +131,19 @@ function apiRun (DS, DSHttpAdapter, $q) {
         return deferred.promise;
     };
 
+    var clear = DS.clear.bind(DS);
+    DS.clear = function (...args) {
+        fetched = {};
+        return clear(...args);
+    };
+
+    var ejectAll = DS.ejectAll.bind(DS);
+    DS.ejectAll = function (model, ...args) {
+        delete fetched[model];
+        return ejectAll(model, ...args);
+    };
+
+
     DS.getMasterArray = model => DS.s[model].collection;
 
     DS.fetchAll = function (model, ids) {
@@ -150,6 +168,15 @@ function apiRun (DS, DSHttpAdapter, $q) {
 
     DS.defaults.methods.detail = function (action) {
         return DS.action(this.constructor.name, this.id, action);
+    };
+
+    DS.patch = function (model, id, attrs, opts={}) {
+        opts.method = 'PATCH';
+        return DS.update(model, id, attrs, opts);
+    };
+
+    DS.defaults.methods.DSPatch = function (attrs, opts) {
+        return DS.patch(this.constructor.name, this.id, attrs, opts);
     };
 
     DS.list = function (model, list) {
