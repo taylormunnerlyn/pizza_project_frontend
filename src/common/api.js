@@ -20,7 +20,7 @@ function apiConfig (DSProvider, DSHttpAdapterProvider, $httpProvider, config) {
         debouncedUpdate: _.debounce(function () {
             let changes = this.DSChanges().changed;
             if(Object.keys(changes).length) {
-                this.patch(changes);
+                this.DSPatch(changes);
             }
         }, 500)
     };
