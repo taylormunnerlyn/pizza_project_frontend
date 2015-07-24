@@ -92,7 +92,11 @@
      * Runs ngAnnotate if compiling.
      */
     gulp.task('buildScripts', function () {
-        return gulp.src(config.appFiles.js)
+        var scripts = config.appFiles.js;
+        if(env === 'dev') {
+            scripts = scripts.concat(config.devScripts);
+        }
+        return gulp.src(scripts)
             .pipe(changed(config.buildDir))
             .pipe(jshint())
             .pipe(jshint.reporter('jshint-stylish'))
@@ -354,8 +358,8 @@
 
         // Override the styles if compiling.
         if (compiling) {
-            scripts = ['app.min.js' + '?cacheBuster=' + cacheBuster];
-            styles = ['main.min.css' + '?cacheBuster=' + cacheBuster];
+            scripts = ['app.' + cacheBuster + '.min.js'];
+            styles = ['main.' + cacheBuster + '.min.css'];
         }
 
         return gulp.src(config.appFiles.index)

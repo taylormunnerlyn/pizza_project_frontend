@@ -37,6 +37,10 @@
             ]
         },
 
+        devScripts: [
+            'vendor/tota11y.js'
+        ],
+
         rootFiles: [
             'src/favicon.ico',
             'src/robots.txt',
@@ -90,6 +94,7 @@
                     'es6-module-loader-sans-promises.src.js',
                 'node_modules/systemjs/dist/system.src.js',
                 'node_modules/systemjs/lib/extension-register.js',
+                'bower_components/tota11y/build/tota11y.js',
                 'bower_components/lodash/lodash.js',
                 'bower_components/angular/angular.js',
                 'bower_components/angular-ui-router/release/' +

@@ -71,6 +71,12 @@ function apiRun (DS, DSHttpAdapter, $q) {
     let fetched = {};
 
     function handlePagination (paging, page=1) {
+        if(paging.control.abort) {
+            paging.deferred.reject({error: 'Aborted', partial: paging.result});
+        } else if(paging.control.done) {
+            paging.deferred.resolve(paging.result);
+        }
+
         paging.params.page = page;
         DSHttpAdapter.GET(paging.url, {params: paging.params}).then(res => {
             let objects = DS.inject(paging.model, res.data.results);
@@ -81,11 +87,10 @@ function apiRun (DS, DSHttpAdapter, $q) {
                 progress: paging.result.length / res.data.count
             });
 
-            if(res.data.next) {
-                handlePagination(paging, ++page);
-            } else {
-                paging.deferred.resolve(paging.result);
+            if(!res.data.next) {
+                paging.control.done = true;
             }
+            handlePagination(paging, ++page);
         }, paging.deferred.reject);
     }
 
@@ -95,25 +100,37 @@ function apiRun (DS, DSHttpAdapter, $q) {
             result = [],
             promise = deferred.promise;
         promise.$object = result;
-        params = params && typeof params === 'object' ? params : {};
+        params = typeof params === 'object' ? params : {};
 
-        if(fetched[model] && (!opts || !opts.bypassCache)) {
+        let cacheStr = model + '|';
+        _.forOwn(params, (val, key) => {
+            cacheStr += `${key}:${val}`;
+        });
+
+        let control = {abort: false, done: false};
+        promise.abort = () => control.abort = true;
+        promise.finish = () => control.done = true;
+
+        if(fetched[cacheStr] && (!opts || opts.cache)) {
             let objects = DS.getAll(model);
             Array.prototype.push.apply(result, objects);
             deferred.resolve(result);
             return promise;
         }
+        promise.then(() => {
+            fetched[cacheStr] = true;
+        });
+
         handlePagination({
             model: model,
             url: url,
             result: result,
             deferred: deferred,
-            params: params
+            params: params,
+            control: control,
         });
-        return promise.then(res => {
-            fetched[model] = true;
-            return res;
-        });
+
+        return promise;
     };
 
     var findAll = DS.findAll.bind(DS);
@@ -143,8 +160,15 @@ function apiRun (DS, DSHttpAdapter, $q) {
         return ejectAll(model, ...args);
     };
 
+    DS.url = function (model) {
+        return DS.defaults.basePath + DS.definitions[model].endpoint;
+    };
 
-    DS.getMasterArray = model => DS.s[model].collection;
+    DS.defaults.methods.url = function () {
+        return DS.url(this.constructor.name) + '/' + this.id;
+    };
+
+    DS.getMasterArray = model => DS.store[model].collection;
 
     DS.fetchAll = function (model, ids) {
         return $q.all(
@@ -152,9 +176,8 @@ function apiRun (DS, DSHttpAdapter, $q) {
         );
     };
 
-    DS.action = function (model, id, action) {
-        let url = DS.defaults.basePath + DS.definitions[model].endpoint;
-        url += `/${id}/${action}`;
+    function doAction (base, action) {
+        let url = `${base}/${action}`;
         return {
             get: params => DSHttpAdapter.GET(url, {params: params}),
             post: (payload, params) => DSHttpAdapter.POST(url, payload, {
@@ -164,10 +187,14 @@ function apiRun (DS, DSHttpAdapter, $q) {
                 params: params
             })
         };
+    }
+
+    DS.detail = function (model, id, action) {
+        return doAction(DS.url(model) + '/' + id, action);
     };
 
     DS.defaults.methods.detail = function (action) {
-        return DS.action(this.constructor.name, this.id, action);
+        return doAction(this.url(), action);
     };
 
     DS.patch = function (model, id, attrs, opts={}) {
