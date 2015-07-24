@@ -17,6 +17,12 @@ class MainController {
     }
 }
 
+function run ($rootScope, $window) {
+    $rootScope.$on('$stateChangeStart', () => {
+        $window.scrollTo(0,0);
+    });
+}
+
 angular
     .module('PROJECT_NAME', [
         'htmlTemplates',
@@ -26,4 +32,5 @@ angular
         'PROJECT_NAME.login',
     ])
     .config(config)
+    .run(run)
     .controller('MainController', MainController);
