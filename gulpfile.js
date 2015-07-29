@@ -37,7 +37,8 @@
         config = require('./config.js'),
         computed = require('./src/config/computed.js'),
         env = process.env.NODE_ENV || 'dev',
-        compiling = process.argv.indexOf('compile') !== -1;
+        compiling = process.argv.indexOf('compile') !== -1,
+        cacheBuster = Date.now();
 
     /**
      * Start the development server on port 9000. Runs from the `bin/` folder if
@@ -277,7 +278,7 @@
 
         return gulp.src(files, {}, {nosort: true})
             .pipe(ngAnnotate())
-            .pipe(concat('app.min.js'))
+            .pipe(concat('app.' + cacheBuster + '.min.js'))
             .pipe(uglify())
             .pipe(gulp.dest(config.compileDir));
     });
@@ -288,7 +289,7 @@
      */
     gulp.task('compileStyles', function () {
         return gulp.src(config.index.styles, {cwd: 'build'})
-            .pipe(concat('main.min.css'))
+            .pipe(concat('main.' + cacheBuster + '.min.css'))
             .pipe(minifyCSS({
                 keepSpecialComments: 0
             }))
@@ -354,7 +355,6 @@
     gulp.task('index', function () {
         var scripts = config.index.scripts;
         var styles = config.index.styles;
-        var cacheBuster = Date.now();
 
         // Override the styles if compiling.
         if (compiling) {
