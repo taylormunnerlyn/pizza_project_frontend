@@ -73,8 +73,10 @@ function apiRun (DS, DSHttpAdapter, $q) {
     function handlePagination (paging, page=1) {
         if(paging.control.abort) {
             paging.deferred.reject({error: 'Aborted', partial: paging.result});
+            return;
         } else if(paging.control.done) {
             paging.deferred.resolve(paging.result);
+            return;
         }
 
         paging.params.page = page;
