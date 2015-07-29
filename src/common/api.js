@@ -17,10 +17,10 @@ function apiConfig (DSProvider, DSHttpAdapterProvider, $httpProvider, config) {
     };
 
     DSProvider.defaults.methods = {
-        debouncedUpdate: _.debounce(function () {
+        debouncedUpdate: _.debounce(function (attrs, options) {
             let changes = this.DSChanges().changed;
             if(Object.keys(changes).length) {
-                this.DSPatch(changes);
+                this.DSPatch(changes, options);
             }
         }, 500)
     };
@@ -100,7 +100,7 @@ function apiRun (DS, DSHttpAdapter, $q) {
             result = [],
             promise = deferred.promise;
         promise.$object = result;
-        params = typeof params === 'object' ? params : {};
+        params = (params && typeof params === 'object') ? params : {};
 
         let cacheStr = model + '|';
         _.forOwn(params, (val, key) => {
