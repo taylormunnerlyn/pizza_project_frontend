@@ -165,19 +165,11 @@ function apiRun (DS, DSHttpAdapter, $q) {
     DS.url = function (model) {
         return DS.defaults.basePath + DS.definitions[model].endpoint;
     };
-<<<<<<< HEAD
 
     DS.defaults.methods.url = function () {
         return DS.url(this.constructor.name) + '/' + this.id;
     };
 
-=======
-
-    DS.defaults.methods.url = function () {
-        return DS.url(this.constructor.name) + '/' + this.id;
-    };
-
->>>>>>> 02ff6ad... Added accessibility script for dev env, tweaked compiled cache busting, improved findAllPaged, added DS.url and instance.url, cleaned up the detail methods
     DS.getMasterArray = model => DS.store[model].collection;
 
     DS.fetchAll = function (model, ids) {
