@@ -269,12 +269,12 @@
      * that file into another file.
      */
     gulp.task('compileScripts', function () {
-        var files = config.vendor.js;
+        var files = config.index.scripts.map(function(script) {
+            return config.buildDir + '/' + script;
+        });
 
         files.push(config.buildDir + '/' + 'app/**/*.js');
         files.push(config.buildDir + '/' + 'common/**/*.js');
-        files.push(config.buildDir + '/' + 'templates.js');
-        files.push(config.buildDir + '/' + 'config.js');
 
         return gulp.src(files, {}, {nosort: true})
             .pipe(ngAnnotate())
