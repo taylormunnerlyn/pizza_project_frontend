@@ -1,10 +1,39 @@
+/* NOTE: Using BEM for CSS structure - https://css-tricks.com/bem-101/ */
+
+
+/* Import other .less files (except for responsive.less, imported at the end)
+---------------------------------------- */
+
 @import '../../bower_components/bootstrap/less/bootstrap.less';
-@import 'colors.less';
 @import 'defaults.less';
 @import 'mixins.less';
+@import 'colors.less';
 @import 'typography.less';
 
-/* Using BEM for CSS structure - https://css-tricks.com/bem-101/ */
-@import '../app/login/login.less';
+/* General styles
+---------------------------------------- */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Import responsive.less (Must come at the end to override styles here)
+---------------------------------------- */
 @import 'responsive.less';
+/* NOTE: Nothing should come after this!!! */
