@@ -279,7 +279,7 @@
         return gulp.src(files, {}, {nosort: true})
             .pipe(ngAnnotate())
             .pipe(concat('app.' + cacheBuster + '.min.js'))
-            .pipe(uglify())
+            .pipe(uglify({mangle: false}))
             .pipe(gulp.dest(config.compileDir));
     });
 
