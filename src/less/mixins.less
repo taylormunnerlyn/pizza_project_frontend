@@ -1,74 +1,23 @@
-.border-radius-all(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
-    border-top-right-radius: @topright;
-    border-bottom-right-radius: @bottomright;
-    border-bottom-left-radius: @bottomleft;
-    border-top-left-radius: @topleft;
-    --moz-background-clip: padding; background-clip: padding-box;
-}
+/* Izeni standard .less mixins
+---------------------------------------- */
 
-.border-radius (@radius: 4px) {
-    border-radius: @radius;
-    --moz-background-clip: padding; background-clip: padding-box;
-}
-
-//these rules require that you don't define the other border radii.
-//that's why you can't just use .border-radius-all here
-.border-radius-top (@radius: 4px) {
-    border-top-right-radius: @radius;
-    border-top-left-radius: @radius;
-    --moz-background-clip: padding; background-clip: padding-box;}
-
-.border-radius-bottom (@radius: 4px) {
-    border-bottom-right-radius: @radius;
-    border-bottom-left-radius: @radius;
-    --moz-background-clip: padding; background-clip: padding-box;}
-
-.border-radius-right (@radius: 4px) {
-    border-top-right-radius: @radius;
-    border-bottom-right-radius: @radius;
-    --moz-background-clip: padding; background-clip: padding-box;}
-
-.border-radius-left (@radius: 4px) {
-    border-top-left-radius: @radius;
-    border-bottom-left-radius: @radius;
-    --moz-background-clip: padding; background-clip: padding-box;}
-
-.opacity (@opacity, @IEopacity) {
-    filter: ~"progid:DXImageTransform.Microsoft.gradient(enabled = false)";
-    filter: alpha(opacity=@IEopacity);
-    --khtml-opacity: @opacity;
-    --moz-opacity: @opacity;
-    opacity: @opacity;
-}
-
-.shadow (@horizontal, @vertical, @blur, @alpha) {
-    box-shadow: @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
-}
-
-// This is for complex shadows; for basic shadows, use the mixin above
-// to use this mixin, create an @shadow variable with specifics right before you use .box-shadow()
-.box-shadow (@shadow) {
-    box-shadow: @shadow;
-}
-
-//remove a shadow
+/* remove a shadow */
 .no-shadow {
     @shadow: 0 0 0 transparent;
     .box-shadow(@shadow);
 }
 
+/* inner shadow */
 .inner-shadow(@horizontal:0, @vertical:1px, @blur:2px, @alpha: 0.4) {
     box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
 }
 
-.transition (@property: all, @duration: .2s, @timing-function: ease) {
-    transition: @property @duration @timing-function;
-}
-
+/* remove a transition */
 .no-transition (@property: all, @duration: 0s, @timing-function: linear) {
     transition: @property @duration @timing-function;
 }
 
+/* gradients */
 .gradient (@top: white, @bottom: gray) {
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@top), to(@bottom));
     background-image: linear-gradient(@top, @bottom);
@@ -98,53 +47,13 @@
     behavior: url(/static/css/ie9-gradient-fix.htc);
 }
 
-/* IE9 SVG, needs conditional override of 'filter' to 'none' */
-.gradient-shadow (@top: rgba(0,0,0,0), @middle: rgba(0,0,0,.05), @bottom: rgba(0,0,0,.1)) {
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwMDAwMCIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ijc1JSIgc3RvcC1jb2xvcj0iIzAwMDAwMCIgc3RvcC1vcGFjaXR5PSIwLjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAwMDAwMCIgc3RvcC1vcGFjaXR5PSIwLjIiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@top), color-stop(85%,@middle), color-stop(100%,@bottom)); /* Chrome,Safari4+ */
-    background: linear-gradient(to bottom,  @top 0%,@middle 85%,@bottom 100%); /* W3C */
-    filter: ~"progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#33000000',GradientType=0 )"; /* IE6-8 */
-}
-
-
-.box-sizing (@sizing: border-box) {
-    box-sizing: @sizing;
-}
-
-.scale-xy(@x: 1.1, @y:1.1) {
-    transform:scale(@x, @y);
-}
-
+/* columns */
 .columns(@column-count: 3, @column-gap: 20px) {
     column-count: @column-count;
     column-gap: @column-gap;
 }
 
-.translate(@x: 0%, @y: -25%) {
-    transform: translate(@x, @y);
-
-}
-
-.rotate(@angle: -5deg) {
-    transform: rotate(@angle);
-}
-
-.flexbox {
-    display: flex;
-}
-
-.align-items(@align) {
-    align-items: @align;
-}
-
-.justify-content(@justify) {
-    justify-content: @justify;
-}
-
-.align-content(@justify) {
-    align-content: @justify;
-}
-
-.flex-grow(@integer) {
-    flex-grow: @integer;
-}
+/* tranforms */
+.scale-xy(@x: 1.1, @y:1.1) { transform:scale(@x, @y); }
+.translate(@x: 0%, @y: -25%) { transform: translate(@x, @y); }
+.rotate(@angle: -5deg) { transform: rotate(@angle); }
