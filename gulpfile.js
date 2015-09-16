@@ -362,6 +362,10 @@
             styles = ['main.' + cacheBuster + '.min.css'];
         }
 
+        if (env === 'dev') {
+            scripts = scripts.concat(config.devScripts);
+        }
+
         return gulp.src(config.appFiles.index)
             .pipe(template({
                 scripts: scripts,
