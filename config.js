@@ -26,6 +26,7 @@
                 'vendor/angular.js',
                 'vendor/angular-ui-router.js',
                 'vendor/angular-cookies.js',
+                'vendor/ui-bootstrap-tpls.js',
                 'vendor/js-data.js',
                 'vendor/js-data-angular.js',
                 'vendor/bootstrap.js',
@@ -100,6 +101,7 @@
                 'bower_components/angular-ui-router/release/' +
                     'angular-ui-router.js',
                 'bower_components/angular-cookies/angular-cookies.js',
+                'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
                 'bower_components/js-data/dist/js-data.js',
                 'bower_components/js-data-angular/dist/js-data-angular.js',
                 'src/bootstrap.js'

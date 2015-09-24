@@ -6,6 +6,7 @@
         watch = require('gulp-watch'),
         gutil = require('gulp-util'),
         del = require('del'),
+        bower = require('gulp-bower'),
         vinylPaths = require('vinyl-paths'),
         through = require('through2'),
         jshint = require('gulp-jshint'),
@@ -85,6 +86,13 @@
     gulp.task('clean', function () {
         return gulp.src([config.buildDir, config.compileDir], {read: false})
             .pipe(vinylPaths(del));
+    });
+
+    /**
+     * Installs Bower Dependencies.
+     */
+    gulp.task('dependencies', function () {
+        return bower();
     });
 
     /**
@@ -424,6 +432,7 @@
         // Ensure clean is run and finished before everything else.
         runSequence(
             'clean',
+            'dependencies',
             ['buildApp'],
             'index',
             'watch',
@@ -435,6 +444,7 @@
     gulp.task('compile', function (callback) {
         runSequence(
             'clean',
+            'dependencies',
             'buildApp',
             ['compileApp'],
             'index',

@@ -1,6 +1,7 @@
 import 'app/home/home';
 import 'app/login/login';
 import 'common/models';
+import 'common/modals';
 
 function config ($urlRouterProvider, $locationProvider, $stateProvider) {
     $urlRouterProvider.otherwise('/');
@@ -27,7 +28,9 @@ angular
     .module('PROJECT_NAME', [
         'htmlTemplates',
         'ui.router',
+        'ui.bootstrap',
         'models',
+        'modals',
         'PROJECT_NAME.home',
         'PROJECT_NAME.login',
     ])

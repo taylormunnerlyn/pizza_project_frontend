@@ -2,16 +2,17 @@
   "name": "izeni-angular-template",
   "version": "0.1.2",
   "devDependencies": {
-    "angular-mocks": "~1.4.3",
-    "tota11y": "~0.0.9"
+    "angular-mocks": "~1.4.6",
+    "tota11y": "~0.1.0"
   },
   "dependencies": {
-    "lodash": "~3.10.0",
-    "angular": "~1.4.3",
-    "angular-cookies": "~1.4.3",
-    "js-data": "~2.2.3",
-    "js-data-angular": "~3.0.0",
+    "angular": "~1.4.6",
+    "angular-bootstrap": "~0.13.4",
+    "angular-cookies": "~1.4.6",
     "angular-ui-router": "~0.2.15",
-    "bootstrap": "~3.3.5"
+    "bootstrap": "~3.3.5",
+    "js-data": "~2.4.0",
+    "js-data-angular": "~3.1.0",
+    "lodash": "~3.10.1"
   }
 }
