@@ -49,9 +49,7 @@ class AuthService {
                 this._clearAuth();
             });
         } else {
-            let deferred = this.$q.defer();
-            deferred.reject();
-            this.request = deferred.promise;
+            this.request = this.$q.reject();
         }
     }
 
@@ -187,9 +185,7 @@ class AuthService {
      */
     logout () {
         this._clearAuth();
-        let deferred = this.$q.defer();
-        deferred.reject();
-        this.request = deferred.promise;
+        this.request = this.$q.reject();
         if(this.user) {
             this.DS.clear();
             this.user = null;

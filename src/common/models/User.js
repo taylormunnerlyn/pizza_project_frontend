@@ -16,9 +16,7 @@ function UserFactory (DS, config, $http) {
                 return $http.put(url, fd, {
                     transformRequest: angular.identity,
                     headers: {'Content-Type': undefined}
-                }).then(() => {
-                    return DS.refresh('User', this.id);
-                });
+                }).then(this.DSRefresh.bind(this));
             },
         },
         computed: {

@@ -15,8 +15,8 @@ function config ($stateProvider) {
             }
         },
         resolve: {
-            login: auth => auth.requireLoggedIn(),
-            user: auth => auth.resolveUser().catch(() => {})
+            loggedIn: auth => auth.requireLoggedIn(),
+            user: (loggedIn, auth) => auth.resolveUser()
         }
     });
 }

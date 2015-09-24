@@ -35,7 +35,7 @@ function errorInterceptor ($q) {
         }
         let msg = '';
         if(obj instanceof Array) {
-            msg += obj.map(item => formErrorMessage(item)).join(', ');
+            msg += obj.map(formErrorMessage).join(', ');
         } else {
             _.forOwn(obj, (val, key) => {
                 if(['non_field_errors', 'detail'].indexOf(key) < 0) {
@@ -162,12 +162,12 @@ function apiRun (DS, DSHttpAdapter, $q) {
         return ejectAll(model, ...args);
     };
 
-    DS.url = function (model) {
+    DS.getUrl = function (model) {
         return DS.defaults.basePath + DS.definitions[model].endpoint;
     };
 
     DS.defaults.methods.url = function () {
-        return DS.url(this.constructor.name) + '/' + this.id;
+        return DS.getUrl(this.constructor.name) + '/' + this.id;
     };
 
     DS.getMasterArray = model => DS.store[model].collection;
@@ -181,22 +181,24 @@ function apiRun (DS, DSHttpAdapter, $q) {
     function doAction (base, action) {
         let url = `${base}/${action}`;
         return {
-            get: params => DSHttpAdapter.GET(url, {params: params}),
+            get: params => DSHttpAdapter.GET(url, {
+                params: params
+            }).then(res => res.data),
             post: (payload, params) => DSHttpAdapter.POST(url, payload, {
                 params: params
-            }),
+            }).then(res => res.data),
             put: (payload, params) => DSHttpAdapter.PUT(url, payload, {
                 params: params
-            })
+            }).then(res => res.data)
         };
     }
 
     DS.detail = function (model, id, action) {
-        return doAction(DS.url(model) + '/' + id, action);
+        return doAction(DS.getUrl(model) + '/' + id, action);
     };
 
     DS.defaults.methods.detail = function (action) {
-        return doAction(this.url(), action);
+        return doAction(this.getUrl(), action);
     };
 
     DS.patch = function (model, id, attrs, opts={}) {
@@ -209,7 +211,7 @@ function apiRun (DS, DSHttpAdapter, $q) {
     };
 
     DS.defaults.methods.detail = function (action) {
-        return doAction(this.url(), action);
+        return doAction(this.getUrl(), action);
     };
 
     DS.patch = function (model, id, attrs, opts={}) {
@@ -225,7 +227,9 @@ function apiRun (DS, DSHttpAdapter, $q) {
         let url = DS.defaults.basePath + DS.definitions[model].endpoint;
         url += '/' + list;
         return {
-            get: params => DSHttpAdapter.GET(url, {params: params}),
+            get: params => DSHttpAdapter.GET(url, {
+                params: params
+            }).then(res => res.data),
             getPaged: params => {
                 let deferred = $q.defer(),
                     result = [];
@@ -240,10 +244,10 @@ function apiRun (DS, DSHttpAdapter, $q) {
             },
             post: (payload, params) => DSHttpAdapter.POST(url, payload, {
                 params: params
-            }),
+            }).then(res => res.data),
             put: (payload, params) => DSHttpAdapter.PUT(url, payload, {
                 params: params
-            })
+            }).then(res => res.data)
         };
     };
 }
