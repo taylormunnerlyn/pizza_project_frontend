@@ -16,15 +16,6 @@ function apiConfig (DSProvider, DSHttpAdapterProvider, $httpProvider, config) {
         return data;
     };
 
-    DSProvider.defaults.methods = {
-        debouncedUpdate: _.debounce(function (attrs, options) {
-            let changes = this.DSChanges().changed;
-            if(Object.keys(changes).length) {
-                this.DSPatch(changes, options);
-            }
-        }, 500)
-    };
-
     $httpProvider.interceptors.push('errorInterceptor');
 }
 
@@ -166,10 +157,6 @@ function apiRun (DS, DSHttpAdapter, $q) {
         return DS.defaults.basePath + DS.definitions[model].endpoint;
     };
 
-    DS.defaults.methods.url = function () {
-        return DS.getUrl(this.constructor.name) + '/' + this.id;
-    };
-
     DS.getMasterArray = model => DS.store[model].collection;
 
     DS.fetchAll = function (model, ids) {
@@ -197,59 +184,47 @@ function apiRun (DS, DSHttpAdapter, $q) {
         return doAction(DS.getUrl(model) + '/' + id, action);
     };
 
-    DS.defaults.methods.detail = function (action) {
-        return doAction(this.getUrl(), action);
-    };
-
     DS.patch = function (model, id, attrs, opts={}) {
         opts.method = 'PATCH';
         return DS.update(model, id, attrs, opts);
-    };
-
-    DS.defaults.methods.DSPatch = function (attrs, opts) {
-        return DS.patch(this.constructor.name, this.id, attrs, opts);
-    };
-
-    DS.defaults.methods.detail = function (action) {
-        return doAction(this.getUrl(), action);
-    };
-
-    DS.patch = function (model, id, attrs, opts={}) {
-        opts.method = 'PATCH';
-        return DS.update(model, id, attrs, opts);
-    };
-
-    DS.defaults.methods.DSPatch = function (attrs, opts) {
-        return DS.patch(this.constructor.name, this.id, attrs, opts);
     };
 
     DS.list = function (model, list) {
-        let url = DS.defaults.basePath + DS.definitions[model].endpoint;
-        url += '/' + list;
-        return {
-            get: params => DSHttpAdapter.GET(url, {
+        let base = DS.defaults.basePath + DS.definitions[model].endpoint,
+            url = base + '/' + list;
+        let actions = doAction(base, list);
+        actions.getPaged = params => {
+            let deferred = $q.defer();
+            handlePagination({
+                model: model,
+                url: url,
+                result: [],
+                deferred: deferred,
                 params: params
-            }).then(res => res.data),
-            getPaged: params => {
-                let deferred = $q.defer(),
-                    result = [];
-                handlePagination({
-                    model: model,
-                    url: url,
-                    result: result,
-                    deferred: deferred,
-                    params: params
-                });
-                return deferred.promise;
-            },
-            post: (payload, params) => DSHttpAdapter.POST(url, payload, {
-                params: params
-            }).then(res => res.data),
-            put: (payload, params) => DSHttpAdapter.PUT(url, payload, {
-                params: params
-            }).then(res => res.data)
+            });
+            return deferred.promise;
         };
+        return actions;
     };
+
+    angular.extend(DS.defaults.methods, {
+        DSPatch: function (attrs, opts) {
+            return DS.patch(this.constructor.name, this.id, attrs, opts);
+        },
+        detail: function (action) {
+            return doAction(this.getUrl(), action);
+        },
+        getUrl: function () {
+            return DS.getUrl(this.constructor.name) + '/' + this.id;
+        },
+        debouncedUpdate: _.debounce(function () {
+            let changes = this.DSChanges().changed;
+            if(Object.keys(changes).length) {
+                return this.DSPatch(changes, {cacheResponse: false});
+            }
+            return $q.reject();
+        }, 500),
+    });
 }
 
 angular
