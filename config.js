@@ -111,6 +111,11 @@
             ],
 
             assets: [
+                'bower_components/bootstrap/fonts/**',
+            ],
+
+            fonts: [
+                'bower_components/bootstrap/fonts/**',
             ]
         }
     };

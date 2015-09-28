@@ -273,6 +273,16 @@
     });
 
     /**
+     * Moves vendor fonts into /assets/fonts
+     */
+    gulp.task('vendorFonts', function () {
+        if (config.vendor.fonts.length !== 0) {
+            return gulp.src(config.vendor.fonts)
+                .pipe(gulp.dest(config.buildDir + '/assets/fonts'));
+        }
+    });
+
+    /**
      * Grab all of the scripts and concatenate them into one file, also minify
      * that file into another file.
      */
@@ -421,7 +431,8 @@
 
     gulp.task('buildApp', [
         'buildScripts', 'buildStyles', 'buildHtml', 'buildAssets', 'config',
-        'buildVendorScripts', 'buildVendorCss', 'buildVendorAssets', 'rootFiles'
+        'buildVendorScripts', 'buildVendorCss', 'buildVendorAssets',
+        'rootFiles', 'vendorFonts'
     ]);
 
     gulp.task('compileApp', [
