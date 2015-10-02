@@ -1,8 +1,8 @@
 class ConfirmModalController {
     constructor ($modalInstance, modalData) {
         this.$modal = $modalInstance;
-        this.data = modalData;
-        _.defaults(modalData, {
+        this.data = modalData || {};
+        _.defaults(this.data, {
             title: 'Confirm',
             body: 'Are you sure?',
             okText: 'Ok',

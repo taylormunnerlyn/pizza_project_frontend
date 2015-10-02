@@ -12,7 +12,7 @@ class Modal {
             controller: name + 'ModalController',
             controllerAs: name + 'Ctrl',
             resolve: {
-                data: function () {
+                modalData: function () {
                     return modalData;
                 },
             },
