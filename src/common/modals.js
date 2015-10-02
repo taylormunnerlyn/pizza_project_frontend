@@ -1,3 +1,5 @@
+import 'common/modals/confirm/confirm';
+
 class Modal {
     constructor ($modal) {
         this.$modal = $modal;
@@ -20,5 +22,7 @@ class Modal {
 }
 
 angular
-    .module('modals', [])
+    .module('modals', [
+        'modals.confirm',
+    ])
     .service('Modal', Modal);
