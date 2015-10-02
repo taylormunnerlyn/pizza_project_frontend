@@ -3,16 +3,19 @@ class Modal {
         this.$modal = $modal;
     }
 
-    open (name, data, options={}) {
+    open (name, modalData, options={}) {
         let lower = name.toLowerCase();
-        options = _.extend({
+        _.defaultsDeep(options, {
             templateUrl: `common/modals/${lower}/${lower}.tpl.html`,
             controller: name + 'ModalController',
             controllerAs: name + 'Ctrl',
             resolve: {
-                data: () => data,
+                data: function () {
+                    return modalData;
+                },
             },
-        }, options);
+        });
+        return this.$modal.open(options).result;
     }
 }
 
