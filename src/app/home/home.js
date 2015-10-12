@@ -1,6 +1,7 @@
 class HomeController {
-    constructor (user) {
+    constructor (user, Notify) {
         this.user = user;
+        Notify.info('Hello World!');
     }
 }
 

@@ -16,7 +16,7 @@ function apiConfig (DSProvider, DSHttpAdapterProvider, $httpProvider, config) {
         return data;
     };
 
-    $httpProvider.interceptors.push('errorInterceptor');
+    $httpProvider.interceptors.push('notifyInterceptor', 'errorInterceptor');
 }
 
 function errorInterceptor ($q) {
@@ -87,7 +87,7 @@ function apiRun (DS, DSHttpAdapter, $q) {
         }, paging.deferred.reject);
     }
 
-    DS.findAllPaged = DS.findAllPaginated = function (model, params, opts) {
+    DS.findAllPaged = function (model, params, opts) {
         let deferred = $q.defer(),
             url = DS.defaults.basePath + DS.definitions[model].endpoint,
             result = [],
@@ -110,7 +110,7 @@ function apiRun (DS, DSHttpAdapter, $q) {
             deferred.resolve(result);
             return promise;
         }
-        promise.then(() => {
+        promise.finally(() => {
             fetched[cacheStr] = true;
         });
 
@@ -229,7 +229,7 @@ function apiRun (DS, DSHttpAdapter, $q) {
 
 angular
     .module('api', [
-        'js-data'
+        'js-data',
     ])
     .factory('errorInterceptor', errorInterceptor)
     .config(apiConfig)

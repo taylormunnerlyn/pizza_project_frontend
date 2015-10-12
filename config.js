@@ -26,6 +26,8 @@
                 'vendor/angular.js',
                 'vendor/angular-ui-router.js',
                 'vendor/angular-cookies.js',
+                'vendor/angular-animate.js',
+                'vendor/angular-toastr.tpls.js',
                 'vendor/ui-bootstrap-tpls.js',
                 'vendor/js-data.js',
                 'vendor/js-data-angular.js',
@@ -34,6 +36,7 @@
                 'config.js'
             ],
             styles: [
+                'vendor/angular-toastr.css',
                 'main.css'
             ]
         },
@@ -102,12 +105,15 @@
                     'angular-ui-router.js',
                 'bower_components/angular-cookies/angular-cookies.js',
                 'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+                'bower_components/angular-animate/angular-animate.js',
+                'bower_components/angular-toastr/dist/angular-toastr.tpls.js',
                 'bower_components/js-data/dist/js-data.js',
                 'bower_components/js-data-angular/dist/js-data-angular.js',
                 'src/bootstrap.js'
             ],
 
             css: [
+                'bower_components/angular-toastr/dist/angular-toastr.css',
             ],
 
             assets: [
