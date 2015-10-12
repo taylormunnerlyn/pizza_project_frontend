@@ -26,6 +26,7 @@
         ngAnnotate = require('gulp-ng-annotate'),
         notify = require('gulp-notify'),
         minifyHTML = require('gulp-minify-html'),
+        imagemin = require('gulp-imagemin'),
         sourcemaps = require('gulp-sourcemaps'),
         chalk = require('chalk'),
         table = require('text-table'),
@@ -323,6 +324,9 @@
         assets.push(config.buildDir + '/assets/**');
 
         return gulp.src(assets)
+            .pipe(imagemin({
+                progressive: true,
+            }))
             .pipe(gulp.dest(config.compileDir + '/assets'));
     });
 
