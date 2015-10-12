@@ -18,10 +18,47 @@ class MainController {
     }
 }
 
-function run ($rootScope, $window) {
+function run ($rootScope, $window, $timeout, $state) {
     $rootScope.$on('$stateChangeStart', () => {
         $window.scrollTo(0,0);
     });
+
+    // adapted from angular-ui-router-title
+    $rootScope.updateTitle = updateTitle;
+    $rootScope.$on('$stateChangeSuccess', (/*evt, to, toP, from*/) => {
+        updateTitle(getTitleValue($state.$current.locals.globals.$title));
+//        if(!$window.ga || !from.name) {
+//            return;
+//        }
+//        $window.ga('send', 'pageview', {page: $location.path()});
+    });
+
+    function updateTitle (title) {
+        $timeout(() => {
+            $rootScope.$title = title;
+        });
+
+        $rootScope.$breadcrumbs = [{
+            title,
+            state: $state.$current.self.name,
+            stateParams: $state.$current.locals.globals.$stateParams,
+        }];
+        var state = $state.$current.parent;
+        while(state) {
+            if(state.resolve && state.resolve.$title) {
+                $rootScope.$breadcrumbs.unshift({
+                    title: getTitleValue(state.locals.globals.$title),
+                    state: state.self.name,
+                    stateParams: state.locals.globals.$stateParams
+                });
+            }
+            state = state.parent;
+        }
+    }
+
+    function getTitleValue (title) {
+        return angular.isFunction(title) ? title() : title;
+    }
 }
 
 angular

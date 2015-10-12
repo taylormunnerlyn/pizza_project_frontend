@@ -15,6 +15,7 @@ function config ($stateProvider) {
             }
         },
         resolve: {
+            $title: () => 'Home',
             loggedIn: auth => auth.requireLoggedIn(),
             user: (loggedIn, auth) => auth.resolveUser()
         }

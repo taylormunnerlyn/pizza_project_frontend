@@ -47,6 +47,7 @@ function config ($stateProvider) {
             }
         },
         resolve: {
+            $title: () => 'Login',
             user: auth => auth.resolveUser().catch(() => {})
         },
         onEnter: ($state, user) => {
