@@ -20,7 +20,9 @@ function UserFactory (DS, config, $http) {
             },
         },
         computed: {
-            fullName: ['first_name', 'last_name', (f, l) => f + ' ' + l],
+            fullName: ['first_name', 'last_name', (f, l) => (
+                f && l ? f + ' ' + l : f || l
+            )],
             imageUrl: ['image', image => {
                 return image ?
                     (image.startsWith('http') ? '' : config.baseUrl) + image:
