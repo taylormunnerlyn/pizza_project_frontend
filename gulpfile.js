@@ -43,14 +43,14 @@
         cacheBuster = Date.now();
 
     /**
-     * Start the development server on port 9000. Runs from the `bin/` folder if
-     * it exists.
+     * Start the development server on port 9000. Runs from the `bin/` or 'stg/'
+     * folder if they exist.
      */
     gulp.task('connect', function () {
         var port = parseInt(argv.port) || 9000,
             host = argv.host || 'localhost';
         connect.server({
-            root: ['bin', 'build'],
+            root: ['bin', 'stg', 'build'],
             port: port,
             livereload: true,
             host: host,
@@ -82,10 +82,26 @@
     });
 
     /**
-     * Cleans the build and compile directories.
+     * Cleans the build directory.
      */
-    gulp.task('clean', function () {
-        return gulp.src([config.buildDir, config.compileDir], {read: false})
+    gulp.task('cleanBuild', function () {
+        return gulp.src(config.buildDir, {read: false})
+            .pipe(vinylPaths(del));
+    });
+
+    /**
+     * Cleans the compile directory.
+     */
+    gulp.task('cleanCompile', function () {
+        return gulp.src(config.compileDir, {read: false})
+            .pipe(vinylPaths(del));
+    });
+
+    /**
+     * Cleans the release directory.
+     */
+    gulp.task('cleanRelease', function () {
+        return gulp.src(config.releaseDir, {read: false})
             .pipe(vinylPaths(del));
     });
 
@@ -404,6 +420,28 @@
             .pipe(connect.reload());
     });
 
+    gulp.task('maintenanceHtml', function () {
+        var styles = config.index.styles;
+
+        // Override the styles if compiling.
+        if (compiling) {
+            styles = ['main.' + cacheBuster + '.min.css'];
+        }
+
+        return gulp.src(config.appFiles.maintenance)
+            .pipe(template({
+                styles: styles,
+                env: env,
+            }))
+            .pipe(rename('index.html'))
+            .pipe(gulp.dest(config.releaseDir));
+    });
+
+    gulp.task('releaseApp', function () {
+        return gulp.src(config.compileDir + '/**/*')
+            .pipe(gulp.dest(config.releaseDir));
+    });
+
     /**
      * Watch the app files for any changes and perform the necessary actions
      * when a change does occur.
@@ -446,7 +484,7 @@
     gulp.task('build', function (callback) {
         // Ensure clean is run and finished before everything else.
         runSequence(
-            'clean',
+            'cleanBuild',
             'dependencies',
             ['buildApp'],
             'index',
@@ -458,11 +496,28 @@
 
     gulp.task('compile', function (callback) {
         runSequence(
-            'clean',
+            'maintenanceHtml',
             'dependencies',
+            'cleanBuild',
             'buildApp',
+            'cleanCompile',
             ['compileApp'],
             'index',
+            'cleanRelease',
+            'releaseApp',
+            callback
+        );
+    });
+
+    gulp.task('maintenance', function (callback) {
+        runSequence(
+            'buildStyles',
+            'buildVendorCss',
+            'buildVendorAssets',
+            'cleanCompile',
+            'compileStyles',
+            'compileAssets',
+            'maintenanceHtml',
             callback
         );
     });

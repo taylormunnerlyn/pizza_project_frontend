@@ -1,5 +1,6 @@
 .idea/
 build/
+stg/
 bin/
 node_modules/
 bower_components/

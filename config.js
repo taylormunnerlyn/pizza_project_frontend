@@ -3,7 +3,8 @@
 
     module.exports = {
         buildDir: 'build',
-        compileDir: 'bin',
+        compileDir: 'stg',
+        releaseDir: 'bin',
 
         babelOptions: {
             modules: 'system',
@@ -67,6 +68,9 @@
 
             // The main .html file for the SPA app.
             index: ['src/index.html'],
+
+            // Maintenance html
+            maintenance: ['src/maintenance.html'],
 
             // Generally there should only be one .less file and all other files
             // should be imported from this one.
