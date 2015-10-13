@@ -7,6 +7,7 @@
         config.changePassword = config.apiUrl + 'reset/';
         config.resetPassword = config.apiUrl + 'reset-password/';
         config.emailVerify = config.apiUrl + 'verify/';
+        config.impersonate = config.apiUrl + 'users/impersonate/';
 
         return config;
     };
