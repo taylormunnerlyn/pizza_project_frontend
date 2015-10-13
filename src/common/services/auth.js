@@ -37,7 +37,7 @@ class AuthService {
         this.User = User;
         this.DS = DS;
         this.session = session;
-//        this.request = $q.reject('Not initialized');
+        this.request = $q.reject('Not initialized');
     }
 
     /**
@@ -265,4 +265,3 @@ angular
     ])
     .run(authRun)
     .service('auth', AuthService);
-
