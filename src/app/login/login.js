@@ -2,11 +2,12 @@ import 'common/services/auth';
 import 'common/models/User';
 
 class LoginController {
-    constructor (auth, $state, $stateParams, User) {
+    constructor (auth, $state, $stateParams, User, config) {
         this.auth = auth;
         this.$state = $state;
         this.$stateParams = $stateParams;
         this.User = User;
+        this.config = config;
     }
 
     login () {

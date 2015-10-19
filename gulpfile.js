@@ -82,6 +82,18 @@
     });
 
     /**
+     * Cleans the build, compile, and release directories.
+     */
+    gulp.task('clean', function () {
+        return gulp.src([
+            config.buildDir,
+            config.compileDir,
+            config.releaseDir,
+        ], {read: false})
+            .pipe(vinylPaths(del));
+    });
+
+    /**
      * Cleans the build directory.
      */
     gulp.task('cleanBuild', function () {
@@ -484,7 +496,7 @@
     gulp.task('build', function (callback) {
         // Ensure clean is run and finished before everything else.
         runSequence(
-            'cleanBuild',
+            'clean',
             'dependencies',
             ['buildApp'],
             'index',
