@@ -1,5 +1,9 @@
 {
     "config": {
-        "apiHost": "http://localhost:8000"
+        "apiHost": "http://localhost:8000",
+        "oauth": {
+            "google-oauth2": "974923707135-9qgnbrpq4a72qecjtfricf9fbv1otv5h.apps.googleusercontent.com",
+            "facebook": "1649988431884827"
+        }
     }
 }

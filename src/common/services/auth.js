@@ -173,6 +173,21 @@ class AuthService {
     }
 
     /**
+     *
+     */
+    oauth (provider, params) {
+        return this.$http.get(this.config.oauthUrl + provider + '/', {
+            params
+        }).then(resp => {
+            this._setAuth(resp.data.token, resp.data.id);
+            return this.setUser(resp.data.id);
+        }, err => {
+            this._clearAuth();
+            return this.$q.reject(err);
+        });
+    }
+
+    /**
      * Sends a reset password request using the passed email or
      * this.user's primary_email
      *

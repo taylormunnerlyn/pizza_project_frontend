@@ -57,3 +57,23 @@
 .scale-xy(@x: 1.1, @y:1.1) { transform:scale(@x, @y); }
 .translate(@x: 0%, @y: -25%) { transform: translate(@x, @y); }
 .rotate(@angle: -5deg) { transform: rotate(@angle); }
+
+.flexbox {
+    display: flex;
+}
+
+.align-items(@align) {
+    align-items: @align;
+}
+
+.justify-content(@justify) {
+    justify-content: @justify;
+}
+
+.align-content(@justify) {
+    align-content: @justify;
+}
+
+.flex-grow(@integer) {
+    flex-grow: @integer;
+}

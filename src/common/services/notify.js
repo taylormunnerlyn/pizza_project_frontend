@@ -77,7 +77,6 @@ function notifyInterceptor ($q, $injector) {
 function NotifyConfig (toastrConfig) {
     angular.extend(toastrConfig, {
         closeButton: true,
-        closeHtml: '<i class="ss-delete"></i>',
         iconClasses: {
           error: 'toastr-error',
           info: 'toastr-info',

@@ -48,7 +48,7 @@ function config ($stateProvider) {
             }
         },
         resolve: {
-            $title: () => 'Login',
+            $title: function() {return 'Login';},
             user: auth => auth.resolveUser().catch(() => {})
         },
         onEnter: ($state, user) => {
@@ -61,6 +61,28 @@ function config ($stateProvider) {
         url: 'logout',
         onEnter: auth => {
             auth.logout();
+        }
+    });
+    $stateProvider.state('PROJECT_NAME.oauth', {
+        url: 'oauth/:provider?code&state',
+        onEnter: ($stateParams, $state, $cookies, Notify, auth) => {
+            let provider = $stateParams.provider,
+                storedState = $cookies.get(provider + '-state');
+            if ($stateParams.state === storedState) {
+                $cookies.remove(provider + '-state');
+                auth.oauth(provider, {
+                    code: $stateParams.code,
+                    state: storedState
+                }).then(() => {
+                    $state.go('PROJECT_NAME.home');
+                }, () => {
+                    Notify.error('Unable to login using oauth', {timeOut: 0});
+                    $state.go('PROJECT_NAME.login');
+                });
+            } else {
+                Notify.error('Invalid oauth state!', {timeOut: 0});
+                $state.go('PROJECT_NAME.login');
+            }
         }
     });
 }
