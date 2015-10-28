@@ -7,7 +7,23 @@ class LoginController {
         this.$state = $state;
         this.$stateParams = $stateParams;
         this.User = User;
-        this.config = config;
+        let oauth = [{
+            provider: 'google-oauth2',
+            name: 'Google',
+            icon: '/assets/img/google.svg',
+            url: 'https://accounts.google.com/o/oauth2/auth?response_type=code',
+            scope: 'openid email profile',
+        }, {
+            provider: 'facebook',
+            name: 'Facebook',
+            icon: '/assets/img/facebook.png',
+            url: 'https://www.facebook.com/dialog/oauth?',
+            scope: 'email',
+        }];
+
+        if (config.oauth) {
+            this.oauth = oauth.filter(o => o.client_id = config.oauth[o.provider]);
+        }
     }
 
     login () {

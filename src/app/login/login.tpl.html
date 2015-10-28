@@ -15,7 +15,7 @@
                     Login
                 </button>
             </center>
-            <social-auth oauth="oauth" ng-repeat="oauth in LoginCtrl.config.oauth"></social-auth>
+            <social-auth oauth="oauth" ng-repeat="oauth in LoginCtrl.oauth"></social-auth>
         </form>
 
         <form ng-submit="LoginCtrl.reset()" ng-if="LoginCtrl.showReset" class="login__reset">
