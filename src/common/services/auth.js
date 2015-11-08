@@ -102,7 +102,9 @@ class AuthService {
             });
         }
         if (typeof userId === 'object') {
-            deferred.resolve(this.User.inject(userId));
+            let user = this.User.inject(userId);
+            deferred.resolve(user);
+            user.DSRefresh();
         }
 
         return this.request;

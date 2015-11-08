@@ -1,3 +1,5 @@
+import {Paging} from 'common/services/paging';
+
 function apiConfig (DSProvider, DSHttpAdapterProvider, $httpProvider, config) {
     DSProvider.defaults.basePath = config.apiUrl;
     DSHttpAdapterProvider.defaults.forceTrailingSlash = true;
@@ -58,130 +60,81 @@ function errorInterceptor ($q) {
     };
 }
 
-function apiRun (DS, DSHttpAdapter, $q) {
-    let fetched = {};
+function apiRun (DS, DSHttpAdapter, $q, $http) {
+    function getResource (model) {
+        return DS.definitions[model];
+    }
 
-    function handlePagination (paging, page=1) {
-        if(paging.control.abort) {
-            paging.deferred.reject({error: 'Aborted', partial: paging.result});
-            return;
-        } else if(paging.control.done) {
-            paging.deferred.resolve(paging.result);
-            return;
+    function getUrl (method, resource, options, id) {
+        if (typeof resource === 'string') {
+            resource = getResource(resource);
         }
+        let path = DSHttpAdapter.getPath(method, resource, id, options);
+        if (options.list) {
+            path += '/' + options.list;
+        }
+        if (options.detail) {
+            path += '/' + options.detail;
+        }
+        let trailing = path.slice(-1) === '/';
+        if (DSHttpAdapter.defaults.forceTrailingSlash && !trailing) {
+            path += '/';
+        }
+        return path;
+    }
 
-        paging.params.page = page;
-        DSHttpAdapter.GET(paging.url, {params: paging.params}).then(res => {
-            let objects = DS.inject(paging.model, res.data.results);
-            Array.prototype.push.apply(paging.result, objects);
-            paging.deferred.notify({
-                result: paging.result,
-                page: objects,
-                progress: paging.result.length / res.data.count
-            });
-
-            if(!res.data.next) {
-                paging.control.done = true;
+    function getActions (url, paging_model='') {
+        let actions = {
+            get: function (params, options={}) {
+                if (params) {
+                    options.params = options.params || {};
+                    _.extend(options.params, params);
+                }
+                return $http.get(url, options).then(r => r.data);
+            },
+            patch: function (data, options) {
+                return $http.patch(url, data, options).then(r => r.data);
+            },
+            post: function (data, options) {
+                return $http.post(url, data, options).then(r => r.data);
+            },
+            put: function (data, options) {
+                return $http.put(url, data, options).then(r => r.data);
             }
-            handlePagination(paging, ++page);
-        }, paging.deferred.reject);
-    }
-
-    DS.findAllPaged = function (model, params, opts) {
-        let deferred = $q.defer(),
-            url = DS.defaults.basePath + DS.definitions[model].endpoint,
-            result = [],
-            promise = deferred.promise;
-        promise.$object = result;
-        params = (params && typeof params === 'object') ? params : {};
-
-        let cacheStr = model + '|';
-        _.forOwn(params, (val, key) => {
-            cacheStr += `${key}:${val}`;
-        });
-
-        let control = {abort: false, done: false};
-        promise.abort = () => control.abort = true;
-        promise.finish = () => control.done = true;
-
-        if(fetched[cacheStr] && (!opts || opts.cache)) {
-            let objects = DS.getAll(model);
-            Array.prototype.push.apply(result, objects);
-            deferred.resolve(result);
-            return promise;
-        }
-        promise.finally(() => {
-            fetched[cacheStr] = true;
-        });
-
-        handlePagination({
-            model: model,
-            url: url,
-            result: result,
-            deferred: deferred,
-            params: params,
-            control: control,
-        });
-
-        return promise;
-    };
-
-    var findAll = DS.findAll.bind(DS);
-    DS.findAll = function (...args) {
-        let deferred = $q.defer(),
-            promise = deferred.promise,
-            result = [];
-        promise.$object = result;
-
-        findAll(...args).then(objects => {
-            Array.prototype.push.apply(result, objects);
-            deferred.resolve(result);
-        }, deferred.reject);
-
-        return deferred.promise;
-    };
-
-    var clear = DS.clear.bind(DS);
-    DS.clear = function (...args) {
-        fetched = {};
-        return clear(...args);
-    };
-
-    var ejectAll = DS.ejectAll.bind(DS);
-    DS.ejectAll = function (model, ...args) {
-        delete fetched[model];
-        return ejectAll(model, ...args);
-    };
-
-    DS.getUrl = function (model) {
-        return DS.defaults.basePath + DS.definitions[model].endpoint;
-    };
-
-    DS.getMasterArray = model => DS.store[model].collection;
-
-    DS.fetchAll = function (model, ids) {
-        return $q.all(
-            ids.map(id => DS.find(model, id))
-        );
-    };
-
-    function doAction (base, action) {
-        let url = `${base}/${action}`;
-        return {
-            get: params => DSHttpAdapter.GET(url, {
-                params: params
-            }).then(res => res.data),
-            post: (payload, params) => DSHttpAdapter.POST(url, payload, {
-                params: params
-            }).then(res => res.data),
-            put: (payload, params) => DSHttpAdapter.PUT(url, payload, {
-                params: params
-            }).then(res => res.data)
         };
+        if (paging_model) {
+            actions.paging = function (params, options={}) {
+                options.url = url;
+                return DS.paging(paging_model, params, options);
+            };
+        }
+        return actions;
     }
 
-    DS.detail = function (model, id, action) {
-        return doAction(DS.getUrl(model) + '/' + id, action);
+    DS.list = function (model, list) {
+        let url = getUrl('findAll', getResource(model), {list});
+        return getActions(url, model);
+    };
+
+    DS.paging = function (model, params={}, options={}) {
+        if (!options.url) {
+            options.url = getUrl('findAll', model, options);
+        }
+        if (params) {
+            options.params = options.params || {};
+            _.extend(options.params, params);
+        }
+        return new Paging($q, $http, options, getResource(model));
+    };
+
+    DS.findAllPaged = function (model, params={}, options={}) {
+        if (!options.url) {
+            options.url = getUrl('findAll', model, options);
+        }
+        if (!options.fetchAllPages) {
+            options.fetchAllPages = true;
+        }
+        return DS.paging(model, params, options).init();
     };
 
     DS.patch = function (model, id, attrs, opts={}) {
@@ -189,41 +142,59 @@ function apiRun (DS, DSHttpAdapter, $q) {
         return DS.update(model, id, attrs, opts);
     };
 
-    DS.list = function (model, list) {
-        let base = DS.defaults.basePath + DS.definitions[model].endpoint,
-            url = base + '/' + list;
-        let actions = doAction(base, list);
-        actions.getPaged = params => {
-            let deferred = $q.defer();
-            handlePagination({
-                model: model,
-                url: url,
-                result: [],
-                deferred: deferred,
-                params: params
+    function debouncedUpdate () {
+        if (!this._debouncer) {
+            let model = this.constructor.name;
+            Object.defineProperty(this, '_debouncer', {
+                enumerable: false,
+                value: _.debounce(() => {
+                    let deferred = this._debouncedDeferred;
+                    delete this._debouncedDeferred;
+                    let changes = this.DSChanges().changed;
+                    if(Object.keys(changes).length) {
+                        let changedAt = this.DSLastModified();
+                        this.DSPatch(changes, {
+                            cacheResponse: false
+                        }).then(obj => {
+                            let newChanges;
+                            if (this.DSLastModified() !== changedAt) {
+                                newChanges = this.DSChanges().changed;
+                            }
+                            DS.inject(model, obj);
+                            if (newChanges) {
+                                // reapply more recent changes
+                                _.extend(this, newChanges);
+                            }
+                            deferred.resolve(this);
+                        }, deferred.reject);
+                    } else {
+                        deferred.resolve(this);
+                    }
+                }, 500)
             });
-            return deferred.promise;
-        };
-        return actions;
-    };
+        }
+        if (!this._debouncedDeferred) {
+            Object.defineProperty(this, '_debouncedDeferred', {
+                enumerable: false,
+                configurable: true,
+                value: $q.defer(),
+            });
+        }
+        this._debouncer();
+        return this._debouncedDeferred.promise;
+    }
 
     angular.extend(DS.defaults.methods, {
         DSPatch: function (attrs, opts) {
             return DS.patch(this.constructor.name, this.id, attrs, opts);
         },
-        detail: function (action) {
-            return doAction(this.getUrl(), action);
+        detail: function (detail) {
+            let resource = getResource(this.constructor.name);
+            let id = this[resource.idAttribute];
+            let url = getUrl('find', resource, {detail}, id);
+            return getActions(url);
         },
-        getUrl: function () {
-            return DS.getUrl(this.constructor.name) + '/' + this.id;
-        },
-        debouncedUpdate: _.debounce(function () {
-            let changes = this.DSChanges().changed;
-            if(Object.keys(changes).length) {
-                return this.DSPatch(changes, {cacheResponse: false});
-            }
-            return $q.reject();
-        }, 500),
+        debouncedUpdate: debouncedUpdate,
     });
 }
 
