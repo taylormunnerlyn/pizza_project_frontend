@@ -1,0 +1,78 @@
+/* Toasts
+----------------------------------------- */
+
+/* Toast color variables */
+/* Instead of using the default toast colors, these can be set to match project colors by using variables from colors.less. 
+For example: @toast-text: @gray;
+*/
+@toast-close: white;
+@toast-text: white;
+@toast-bg: #424242; // Material Design's gray 800
+@toast-warning: #FF9800; // Material Design's orange 500
+@toast-error: #F44336; // Material Design's red 500
+@toast-info: #2196F3; // Material Design's blue 500
+@toast-success: #4CAF50; // Material Design's green 500
+
+#toast-container {
+    // position already set to fixed in angular-toastr.css
+    bottom: 64px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#toast-container > div {
+    box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    transition: box-shadow .2s ease;
+    &:hover { box-shadow: 0 2px 10px rgba(0,0,0,.7); }
+}
+
+#toast-container.toast-bottom.toast-container {
+    > div {
+        margin: 0 auto;
+        padding: 16px 32px 16px 16px;
+        height: auto;
+        min-height: 48px;
+        width: auto;
+        min-width: 320px;
+        max-width: 640px;
+        position: relative;
+        .toast-close-button {
+            transition: opacity .2s ease;
+            font-size: 16px;
+            float: none;
+            font-weight: bold;
+            text-shadow: none;
+            opacity: 1;
+            position: absolute;
+            top: calc(~"50% - 9px");
+            right: 16px;
+            color: @toast-close;
+            &:hover, &:focus {
+                color: @toast-close;
+                opacity: .5;
+            }
+        }
+    }
+
+    .toast-title { .bold; }
+
+    > .toast {
+        background-color: @toast-bg;
+        color: @toast-text;
+        border-left: 8px solid @toast-bg;
+    }
+    
+    /* configurable styles for different kinds of toasts */
+    > .toastr-warning {
+        border-left-color: @toast-warning;
+    }
+    > .toastr-error {
+        border-left-color: @toast-error;
+    }
+    > .toastr-info {
+        border-left-color: @toast-info;
+    }
+    > .toastr-success {
+        border-left-color: @toast-success;
+    }
+}
