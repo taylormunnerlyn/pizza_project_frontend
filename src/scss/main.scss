@@ -1,3 +1,10 @@
+/* MAIN PROJECT STYLES 
+---------------------------------------- */
+
+/* Import stylesheets
+---------------------------------------- */
+/* Exception: responsive styles are imported at the end to override rules set here */
+
 @import '../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap';
 $icon-font-path: 'assets/fonts';
 @import 'colors';
@@ -5,8 +12,18 @@ $icon-font-path: 'assets/fonts';
 @import 'defaults';
 @import 'mixins';
 @import 'toasts';
-
-/* Using BEM for CSS structure - https://css-tricks.com/bem-101/ */
 @import '../app/login/login';
 
+
+/* General rules
+----------------------------------------*/
+
+
+
+
+
+
+/* Import responsive scss
+----------------------------------------*/
 @import 'responsive';
+/* NOTE: Nothing should come after this!!! */

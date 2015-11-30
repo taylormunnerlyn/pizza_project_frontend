@@ -1,3 +1,6 @@
+/* TYPOGRAPHY
+---------------------------------------- */
+
 /* Font Weights
 ---------------------------------------- */
 
@@ -6,16 +9,18 @@
 @mixin medium { font-weight: 500; }
 @mixin bold { font-weight: 700; }
 
+
 /* General typographic rules
 ---------------------------------------- */
 
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;
     @include normal;
     color: $gray;
     line-height: 1.4;
 }
+
 
 /* Font sizes
 ---------------------------------------- */

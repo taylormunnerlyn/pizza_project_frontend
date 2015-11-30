@@ -1,15 +1,13 @@
-//remove a shadow
-@mixin no-shadow {
-    box-shadow: 0 0 0 transparent;
-}
+/* IZENI MIXINS
+---------------------------------------- */
+
+@mixin no-shadow { box-shadow: 0 0 0 transparent; }
 
 @mixin transition ($property: all, $duration: .2s, $timing-function: ease) {
     transition: $property $duration $timing-function;
 }
 
-@mixin no-transition {
-    transition: none;
-}
+@mixin no-transition { transition: none; }
 
 @mixin columns($column-count: 3, $column-gap: 20px) {
     column-count: $column-count;
