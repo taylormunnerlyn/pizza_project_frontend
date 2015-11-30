@@ -72,16 +72,16 @@
             // Maintenance html
             maintenance: ['src/maintenance.html'],
 
-            // Generally there should only be one .less file and all other files
+            // Generally there should only be one .scss file and all other files
             // should be imported from this one.
-            less: ['src/less/main.less'],
+            scss: ['src/scss/main.scss'],
 
             delta: {
                 js: [
                     'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js',
                     '!src/config/**', '.jshintrc'
                 ],
-                less: ['src/**/*.less', '.csslintrc']
+                scss: ['src/**/*.scss', '.csslintrc']
             }
         },
 

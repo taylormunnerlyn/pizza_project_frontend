@@ -13,7 +13,7 @@
         concat = require('gulp-concat'),
         uglify = require('gulp-uglify'),
         rename = require('gulp-rename'),
-        less = require('gulp-less'),
+        sass = require('gulp-sass'),
         minifyCSS = require('gulp-minify-css'),
         templateCache = require('gulp-angular-templatecache'),
         template = require('gulp-template'),
@@ -147,10 +147,10 @@
     });
 
     /**
-     * Lints all of the less files compiles them into CSS and moves them
+     * Lints all of the scss files compiles them into CSS and moves them
      * into the build directory.
      *
-     * * NOTE: Works best if you only have one .less file and everything else
+     * * NOTE: Works best if you only have one .scss file and everything else
      *         is imported from it.
      */
     gulp.task('buildStyles', function () {
@@ -230,11 +230,11 @@
             gutil.log('\n' + table(countTable));
         };
 
-        return gulp.src(config.appFiles.less)
+        return gulp.src(config.appFiles.scss)
             .pipe(changed(config.buildDir))
             .pipe(sourcemaps.init())
-            .pipe(less())
-            .on('error', notify.onError('LESS Error: <%= error.message %>'))
+            .pipe(sass())
+            .on('error', notify.onError('SCSS Error: <%= error.message %>'))
             .pipe(csslint('.csslintrc'))
             .pipe(csslint.reporter(customCssReporter))
             .pipe(cssAutoprefixer(config.cssAutoPrefixerOptions))
@@ -465,7 +465,7 @@
         watch(config.appFiles.tpl, function () {
             gulp.start(['buildHtml']);
         });
-        watch(config.appFiles.delta.less, function () {
+        watch(config.appFiles.delta.scss, function () {
             gulp.start(['buildStyles']);
         });
         watch(config.appFiles.index, function () {

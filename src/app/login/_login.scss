@@ -4,7 +4,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    .gray-dk-bg;
+    /*TODO update for sass*/
+//    .gray-dk-bg;
     &__logo {
         display: block;
         margin: 64px auto 0;
@@ -24,13 +25,15 @@
         input[type=email], input[type=password] {
             display: block;
             margin: 0 0 20px;
-            .white-bg;
+            /*TODO update for sass*/
+//            .white-bg;
             opacity: .54;
             width: 100%;
             padding: 15px;
             border: none;
             border-radius: 4px;
-            .transition;
+            /*TODO update for sass*/
+//            .transition;
             &:focus {
                 opacity: .87;
             }
@@ -42,9 +45,10 @@
         }
     }
     &__title {
-        .white;
-        .text-center;
-        .uppercase;
+        /*TODO update for sass*/
+//        .white;
+//        .text-center;
+//        .uppercase;
         margin: 0;
         padding: 30px;
         border-bottom: 1px solid rgba(255,255,255,.12);

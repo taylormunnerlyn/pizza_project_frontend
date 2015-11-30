@@ -2,16 +2,16 @@
 ----------------------------------------- */
 
 /* Toast color variables */
-/* Instead of using the default toast colors, these can be set to match project colors by using variables from colors.less. 
-For example: @toast-text: @gray;
+/* Instead of using the default toast colors, these can be set to match project colors by using variables from colors.scss.
+For example: $toast-text: $gray;
 */
-@toast-close: white;
-@toast-text: white;
-@toast-bg: #424242; // Material Design's gray 800
-@toast-warning: #FF9800; // Material Design's orange 500
-@toast-error: #F44336; // Material Design's red 500
-@toast-info: #2196F3; // Material Design's blue 500
-@toast-success: #4CAF50; // Material Design's green 500
+$toast-close: white;
+$toast-text: white;
+$toast-bg: #424242; // Material Design's gray 800
+$toast-warning: #FF9800; // Material Design's orange 500
+$toast-error: #F44336; // Material Design's red 500
+$toast-info: #2196F3; // Material Design's blue 500
+$toast-success: #4CAF50; // Material Design's green 500
 
 #toast-container {
     // position already set to fixed in angular-toastr.css
@@ -44,35 +44,38 @@ For example: @toast-text: @gray;
             text-shadow: none;
             opacity: 1;
             position: absolute;
-            top: calc(~"50% - 9px");
+            top: calc(50% - 9px);
             right: 16px;
-            color: @toast-close;
+            color: $toast-close;
             &:hover, &:focus {
-                color: @toast-close;
+                color: $toast-close;
                 opacity: .5;
             }
         }
     }
 
-    .toast-title { .bold; }
+    .toast-title {
+        /*TODO update for sass*/
+//        .bold;
+    }
 
     > .toast {
-        background-color: @toast-bg;
-        color: @toast-text;
-        border-left: 8px solid @toast-bg;
+        background-color: $toast-bg;
+        color: $toast-text;
+        border-left: 8px solid $toast-bg;
     }
-    
+
     /* configurable styles for different kinds of toasts */
     > .toastr-warning {
-        border-left-color: @toast-warning;
+        border-left-color: $toast-warning;
     }
     > .toastr-error {
-        border-left-color: @toast-error;
+        border-left-color: $toast-error;
     }
     > .toastr-info {
-        border-left-color: @toast-info;
+        border-left-color: $toast-info;
     }
     > .toastr-success {
-        border-left-color: @toast-success;
+        border-left-color: $toast-success;
     }
 }
