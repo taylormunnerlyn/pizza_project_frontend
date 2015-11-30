@@ -55,8 +55,7 @@ $toast-success: #4CAF50; // Material Design's green 500
     }
 
     .toast-title {
-        /*TODO update for sass*/
-//        .bold;
+        @include bold;
     }
 
     > .toast {
