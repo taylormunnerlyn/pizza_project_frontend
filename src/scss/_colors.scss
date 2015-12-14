@@ -1,5 +1,36 @@
 /* COLOR VARIABLES
 ---------------------------------------- */
 
-/* Example: $gray-dkest: #212121; */
-$gray: #808080; // rgb(128,128,128)
+/* Set 'theme-color' in <head> of src/index.html to the sites primary color */
+
+/* Example: gray-dkest: #212121, */
+$colors: (
+    gray: #808080,
+);
+
+/* For calling colors in the css instead of a $xyz variable
+
+    Sample of how to use the below function in code
+
+    .className {
+        color: color(gray);
+        background-color: color(gray);
+    }
+*/
+
+
+@function color($color) {
+    @return map-get($colors, $color);
+}
+
+
+/*Generate color, and color-bg classes for each color defined above*/
+@each $name, $color in $colors {
+    .#{$name} {
+        color: $color;
+    }
+    .#{$name}-bg {
+        background-color: $color;
+    }
+}
+
