@@ -15,7 +15,7 @@ $unitSmallest: $unitBase / 2; // 4px
 $unitNone: 0; // helpful to remove margins or padding
 
 
-// Generate utility classes with defined increments
+// Units map
 
 $units: (
     Biggest: $unitBiggest, 
@@ -27,6 +27,8 @@ $units: (
     Smallest: $unitSmallest,
     None: $unitNone
 );
+
+// Generate utility classes
 
 /* Utility classes for margins and padding */
 @each $size, $unit in $units {
