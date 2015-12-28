@@ -1,8 +1,22 @@
-/* Basic Increments for spacing (project-specific) 
+/* Basic Increments for spacing (project-specific)
 ---------------------------------------- */
 
 // Set base increment for project, default is 8px
 $unitBase: 8px;
+
+/* function for setting margin/padding/anything size based on $unitBase
+    Sample of how to use the below function in code
+
+    .className {
+        margin: size(4); //32px
+        padding: size(); //8px since default is 1 if no parameter
+        margin: size(0.5); //4px
+    }
+*/
+
+@function size($multiplier:1) {
+    @return $unitBase * $multiplier;
+}
 
 // All other increments are configured using the base, which corresponds to $unitSmaller. Update the inline comments to clarify what final px measurements would be
 $unitBiggest: $unitBase * 8; // 64px
@@ -18,12 +32,12 @@ $unitNone: 0; // helpful to remove margins or padding
 // Units map
 
 $units: (
-    Biggest: $unitBiggest, 
-    Bigger: $unitBigger, 
-    Big: $unitBig, 
-    Regular: $unitRegular, 
-    Small: $unitSmall, 
-    Smaller: $unitSmaller, 
+    Biggest: $unitBiggest,
+    Bigger: $unitBigger,
+    Big: $unitBig,
+    Regular: $unitRegular,
+    Small: $unitSmall,
+    Smaller: $unitSmaller,
     Smallest: $unitSmallest,
     None: $unitNone
 );
