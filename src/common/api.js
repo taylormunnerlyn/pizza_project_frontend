@@ -131,8 +131,8 @@ function apiRun (DS, DSHttpAdapter, $q, $http) {
         if (!options.url) {
             options.url = getUrl('findAll', model, options);
         }
-        if (!options.fetchAllPages) {
-            options.fetchAllPages = true;
+        if (!options.fetchAll) {
+            options.fetchAll = true;
         }
         return DS.paging(model, params, options).init();
     };
