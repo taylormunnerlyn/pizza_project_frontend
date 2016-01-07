@@ -266,6 +266,7 @@
      */
     gulp.task('buildAssets', function () {
         return gulp.src(config.appFiles.assets)
+            .pipe(imagemin())
             .pipe(gulp.dest(config.buildDir + '/assets'))
             .pipe(connect.reload());
     });
@@ -486,7 +487,7 @@
     gulp.task('buildApp', [
         'buildScripts', 'buildStyles', 'buildHtml', 'buildAssets', 'config',
         'buildVendorScripts', 'buildVendorCss', 'buildVendorAssets',
-        'rootFiles', 'vendorFonts'
+        'rootFiles', 'vendorFonts',
     ]);
 
     gulp.task('compileApp', [
