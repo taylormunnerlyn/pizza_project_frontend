@@ -186,7 +186,9 @@ function apiRun (DS, DSHttpAdapter, $q, $http) {
 
     angular.extend(DS.defaults.methods, {
         DSPatch: function (attrs, opts) {
-            return DS.patch(this.constructor.name, this.id, attrs, opts);
+            let resource = getResource(this.constructor.name);
+            let id = this[resource.idAttribute];
+            return DS.patch(this.constructor.name, id, attrs, opts);
         },
         detail: function (detail) {
             let resource = getResource(this.constructor.name);
