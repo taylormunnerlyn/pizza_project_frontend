@@ -69,5 +69,7 @@ img { max-width: 100%; }
 table { font-size: inherit; }
 
 /* set cursor to pointer for specific elements */
-a { cursor: pointer; }
-[ui-sref] { cursor: pointer; }
+a, [ui-sref], [ng-click] {
+    cursor: pointer;
+    outline: none;
+}
