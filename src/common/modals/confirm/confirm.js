@@ -1,6 +1,6 @@
 class ConfirmModalController {
-    constructor ($modalInstance, modalData) {
-        this.$modal = $modalInstance;
+    constructor ($uibModalInstance, modalData) {
+        this.$modal = $uibModalInstance;
         this.data = modalData || {};
         _.defaults(this.data, {
             title: 'Confirm',

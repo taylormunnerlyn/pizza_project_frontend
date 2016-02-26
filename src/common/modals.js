@@ -1,8 +1,8 @@
 import 'common/modals/confirm/confirm';
 
 class Modal {
-    constructor ($modal) {
-        this.$modal = $modal;
+    constructor ($uibModal) {
+        this.$modal = $uibModal;
     }
 
     open (name, modalData, options={}) {
