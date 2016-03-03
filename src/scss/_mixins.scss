@@ -13,3 +13,14 @@
     column-count: $column-count;
     column-gap: $column-gap;
 }
+
+@mixin font-range($min-size, $max-size, $min-width: 320, $max-width: 1440) {
+    font-size: calc(#{$min-size}px + (#{$max-size} - #{$min-size}) * (100vw - #{$min-width}px) / (#{$max-width} - #{$min-width}));
+
+    @media screen and (max-width: #{$min-width}px) {
+        font-size: #{$min-size}px;
+    }
+    @media screen and (min-width: #{$max-width}px) {
+        font-size: #{$max-size}px;
+    }
+}
