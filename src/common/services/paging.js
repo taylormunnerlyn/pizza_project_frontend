@@ -53,9 +53,9 @@ export class Paging {
             let content = 'data' in response ? response.data : response;
             this.meta.totalCount = content.count;
             this.meta.pageSize = content.results.length;
-            this.meta.pageCount = Math.ceil(
+            this.meta.pageCount = content.results.length ? Math.ceil(
                 this.meta.totalCount / this.meta.pageSize
-            );
+            ) : 1;
             this.savePage(1, firstPage);
             return this.loadPage(1, this.options.prefetch);
         });
