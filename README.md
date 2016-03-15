@@ -23,6 +23,15 @@ mv izeni-angular-template $PROJECT_NAME
 cd $PROJECT_NAME
 find . -type f -print0 | xargs -0 sed -i "s/PROJECT_NAME/$PROJECT_NAME/g"
 npm install && bower install
+```
+If you are using webpack, run these commands: (note: the -g is optional and will install it gobally) 
+```bash
+npm install webpack -g
+npm install webpack-dev-server -g
+webpack-dev-server --inline --hot
+```
+If you are using gulp, run this command: 
+```bash
 gulp build
 ```
 And don't forget to change the git origin to match your project's:
