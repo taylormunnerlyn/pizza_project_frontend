@@ -1,5 +1,5 @@
 <div class="login">
-    <a ui-sref="PROJECT_NAME.home"><img src="/assets/img/logo.png" class="login__logo"></a>
+    <a ui-sref="PROJECT_NAME.home"><img src="/assets/img/logo.svg" class="login__logo"></a>
     <div class="login__forms">
         <h4 class="login__title">Login</h4>
         <form ng-submit="LoginCtrl.login()" ng-if="!LoginCtrl.showReset" class="login__form">
@@ -7,13 +7,13 @@
             <input type="email" name="username" id="username" ng-model="LoginCtrl.username" placeholder="Email Address">
             <input type="password" name="password" id="password" ng-model="LoginCtrl.password" placeholder="Password">
             <center>
-                <a href="" class="login__link" ng-click="LoginCtrl.showReset = !LoginCtrl.showReset">
-                    Forgot Password?
-                </a>
-                <button type="submit" class="btn"
+               <button type="submit" class="btn"
                     ng-disabled="!LoginCtrl.username || !LoginCtrl.password">
                     Login
                 </button>
+                <a href="" class="login__link" ng-click="LoginCtrl.showReset = !LoginCtrl.showReset">
+                    Forgot Password?
+                </a>
             </center>
             <social-auth oauth="oauth" ng-repeat="oauth in LoginCtrl.oauth"></social-auth>
         </form>
