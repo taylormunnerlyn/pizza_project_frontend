@@ -1,29 +1,30 @@
 <div class="login">
     <a ui-sref="PROJECT_NAME.home"><img src="/assets/img/logo.svg" class="login__logo"></a>
     <div class="login__forms">
-        <h4 class="login__title">Login</h4>
         <form ng-submit="LoginCtrl.login()" ng-if="!LoginCtrl.showReset" class="login__form">
+            <h4 class="login__title">Login</h4>
             <p class="error" ng-if="LoginCtrl.error">{{ LoginCtrl.error }}</p>
             <input type="email" name="username" id="username" ng-model="LoginCtrl.username" placeholder="Email Address">
             <input type="password" name="password" id="password" ng-model="LoginCtrl.password" placeholder="Password">
-            <center>
-               <button type="submit" class="btn"
-                    ng-disabled="!LoginCtrl.username || !LoginCtrl.password">
-                    Login
-                </button>
-                <a href="" class="login__link" ng-click="LoginCtrl.showReset = !LoginCtrl.showReset">
-                    Forgot Password?
-                </a>
-            </center>
+            <button type="submit" class="btn login__button"
+            ng-disabled="!LoginCtrl.username || !LoginCtrl.password">
+                Login
+            </button>
+            <a href="" class="login__link" ng-click="LoginCtrl.showReset = !LoginCtrl.showReset">
+                Forgot Password?
+            </a>
+            <!-- Login through Google or Facebook
             <social-auth oauth="oauth" ng-repeat="oauth in LoginCtrl.oauth"></social-auth>
+            -->
         </form>
 
         <form ng-submit="LoginCtrl.reset()" ng-if="LoginCtrl.showReset" class="login__reset">
+            <h4 class="login__title">Password Reset</h4>
             <input type="email" id="email" name="username" placeholder="Email Address" ng-model="LoginCtrl.username">
+            <button type="submit" class="btn login__button">Reset Password</button>
             <a href="" class="login__link" ng-click="LoginCtrl.showReset = !LoginCtrl.showReset">
                 Remember Password?
             </a>
-            <button type="submit" class="btn">Reset Password</button>
         </form>
     </div>
 </div>
