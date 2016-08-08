@@ -4,9 +4,10 @@
 body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     min-width: 320px;
 }
+
+* { box-sizing: border-box; }
 
 /* ng-cloak */
 [ng\:cloak], [ng-cloak], .ng-cloak { display: none !important; }
