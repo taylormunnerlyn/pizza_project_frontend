@@ -6,7 +6,7 @@ angular.module('htmlTemplates', []);
 describe('testing', function () {
     var $rootScope;
 
-    beforeEach(module('PROJECT_NAME'));
+    beforeEach(module('pizza_frontend'));
 
     beforeEach(inject(function (_$rootScope_) {
         $rootScope = _$rootScope_;

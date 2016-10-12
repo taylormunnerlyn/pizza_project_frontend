@@ -1,16 +1,20 @@
-import 'app/home/home';
+import 'app/order/order';
+import 'app/admin/admin';
 import 'app/login/login';
+import 'app/pastOrders/pastOrders';
 import 'common/models';
 import 'common/modals';
 import 'common/services';
 import 'common/directives';
+import 'app/home/home';
 
 function config ($urlRouterProvider, $locationProvider, $stateProvider) {
     $urlRouterProvider.otherwise('/');
     $locationProvider.html5Mode(true);
-    $stateProvider.state('PROJECT_NAME', {
-        url: '/',
-        abstract: true
+    $stateProvider.state('pizza_frontend', {
+        abstract: true,
+        url: '',
+        template: '<ui-view></ui-view>'
     });
 }
 
@@ -64,7 +68,7 @@ function run ($rootScope, $window, $timeout, $state) {
 }
 
 angular
-    .module('PROJECT_NAME', [
+    .module('pizza_frontend', [
         'htmlTemplates',
         'ui.router',
         'ui.bootstrap',
@@ -72,8 +76,11 @@ angular
         'modals',
         'services',
         'directives',
-        'PROJECT_NAME.home',
-        'PROJECT_NAME.login',
+        'pizza_frontend.order',
+        'pizza_frontend.login',
+        'pizza_frontend.home',
+        // 'pizza_frontend.admin',
+        // 'pizza_frontend.pastOrders',
     ])
     .config(config)
     .run(run)

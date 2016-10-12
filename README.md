@@ -4,7 +4,7 @@ This project provides a build process for using ES6 code that will be transpiled
 
 The build process is set up to use the SystemJS module loader during development, when compiled to production the code is concatenated and minified into one file and removes the need for SystemJS to be included. Once ES6 and HTTP/2.0 have better support in browsers the need for concatenated and minified files should go away. Until then this concatenated code is here to stay.
 
-The project also contains several pre-built features: an Auth service (cookie based), js-data, a User model, and home / login states.
+The project also contains several pre-built features: an Auth service (cookie based), js-data, a User model, and order / login states.
 
 Also, js-data has been modified to play nice with DRF. It handles the deserialization of responses that contain paginated meta data. Additional resource methods have been defined such as `findAllPaged`, `list`, `patch`, and `paging` (detailed below). Three instance methods have been added as `DSPatch`, `detail`, and `debouncedUpdate`. View `src/common/api.js` to inspect their implementation details.
 
@@ -14,14 +14,14 @@ Lastly, a $http response interceptor has been defined which will attempt to pars
 ## Quick Setup
 Set your project name as an environment variable
 ```bash
-PROJECT_NAME=[your project name here]
+pizza_frontend=[your project name here]
 ```
 And run the following commands:
 ```bash
 git clone git@dev.izeni.net:izeni/izeni-angular-template.git
-mv izeni-angular-template $PROJECT_NAME
-cd $PROJECT_NAME
-find . -type f -print0 | xargs -0 sed -i "s/PROJECT_NAME/$PROJECT_NAME/g"
+mv izeni-angular-template $pizza_frontend
+cd $pizza_frontend
+find . -type f -print0 | xargs -0 sed -i "s/pizza_frontend/$pizza_frontend/g"
 npm install && bower install
 gulp build
 ```

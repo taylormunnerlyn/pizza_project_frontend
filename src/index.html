@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-controller="MainController as MainCtrl">
     <head iz-seo>
-        <title ng-bind="$title || 'PROJECT_NAME'">PROJECT_NAME</title>
+        <title ng-bind="$title || 'pizza_frontend'">pizza_frontend</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!--  Android Chrome Theme  -->
@@ -13,7 +13,7 @@
         <link rel="stylesheet" type="text/css" href="<%= file %>"><% }); %>
     </head>
     <body>
-        <div ui-view="main"></div>
+        <div ui-view></div>
 
         <noscript>Enable JavaScript to view this web page.</noscript>
         <!-- compiled JavaScript --><% scripts.forEach(function (file) { %>

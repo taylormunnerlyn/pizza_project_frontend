@@ -4,7 +4,7 @@ System
     .import('app/app')
     .then(function () {
         angular.element(document).ready(function () {
-            angular.bootstrap(document, ['PROJECT_NAME']);
+            angular.bootstrap(document, ['pizza_frontend']);
         });
     })
     .catch(function (e) {

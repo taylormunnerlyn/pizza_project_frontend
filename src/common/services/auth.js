@@ -15,7 +15,7 @@ function authRun (auth, $rootScope, $state) {
                 e.preventDefault();
             }
 
-            $state.go('PROJECT_NAME.login', {
+            $state.go('pizza_frontend.login', {
                 redirectState: toState.name,
                 redirectParams: toParams
             }, {location: 'replace'});
@@ -73,7 +73,7 @@ class AuthService {
 
     onLogout () {
         this.$rootScope.$evalAsync(() => {
-            this.$state.go('PROJECT_NAME.login');
+            this.$state.go('pizza_frontend.login');
         });
     }
 
@@ -96,7 +96,7 @@ class AuthService {
             }, err => {
                 this._clearAuth();
                 if(err.data.detail === 'Invalid token.') {
-                    this.$state.go('PROJECT_NAME.login');
+                    this.$state.go('pizza_frontend.login');
                 }
                 deferred.reject(err);
             });

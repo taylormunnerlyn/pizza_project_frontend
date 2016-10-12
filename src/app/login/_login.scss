@@ -5,11 +5,10 @@
     left: 0;
     right: 0;
     &__logo {
-        display: block;
-        margin: 64px auto 0;
-        width: 50vw;
-        min-width: 300px;
-        max-width: 480px;
+        width: 100%;
+        text-align: center;
+        margin-top: 100px;
+        font-size: 50px;
     }
     &__forms {
         width: 300px;

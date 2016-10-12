@@ -34,7 +34,8 @@
                 'vendor/js-data-angular.js',
                 'vendor/bootstrap.js',
                 'templates.js',
-                'config.js'
+                'config.js',
+                'vendor/moment.min.js'
             ],
             styles: [
                 'vendor/angular-toastr.css',
@@ -113,7 +114,8 @@
                 'bower_components/angular-toastr/dist/angular-toastr.tpls.js',
                 'bower_components/js-data/dist/js-data.js',
                 'bower_components/js-data-angular/dist/js-data-angular.js',
-                'src/bootstrap.js'
+                'src/bootstrap.js',
+                'node_modules/moment/min/moment.min.js'
             ],
 
             css: [

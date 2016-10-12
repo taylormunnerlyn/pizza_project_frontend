@@ -1,4 +1,4 @@
-/* MAIN PROJECT STYLES 
+/* MAIN PROJECT STYLES
 ---------------------------------------- */
 
 /* Import stylesheets
@@ -14,6 +14,10 @@ $icon-font-path: 'assets/fonts';
 @import 'mixins';
 @import 'toasts';
 @import '../app/login/login';
+@import '../app/order/order';
+@import '../app/admin/admin';
+@import '../app/pastOrders/pastOrders';
+
 
 
 /* General rules
